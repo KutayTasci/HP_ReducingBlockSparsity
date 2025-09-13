@@ -10,7 +10,7 @@ The goal is to minimize the number of nonzero blocks in block-sparse matrix repr
 - **RCM (Reverse Cuthill–McKee)**  
   A classic bandwidth reduction method for sparse matrices.
 
-- **HPSB (Hypergraph Partitioning for Sparse Blocks)**  
+- **HPSB (Hypergraph Partitioning for Column Reodering Single Border)**  
   Uses hypergraph partitioning to cluster rows/columns and reduce block fill-in.
 
 - **HPNBM (Hypergraph Partitioning for Nonzero Blocks Minimization)**  
