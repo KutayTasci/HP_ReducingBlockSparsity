@@ -10,7 +10,7 @@ The goal is to minimize the number of nonzero blocks in block-sparse matrix repr
 
 - C++17 (or newer) compiler  
 - CMake  
-- **mt-KaHyPar** — the multi-threaded version of the Karlsruhe Hypergraph Partitioning framework. :contentReference[oaicite:0]{index=0}  
+- **mt-KaHyPar** — the multi-threaded version of the Karlsruhe Hypergraph Partitioning framework. 
 - Any other libraries your implementation depends on (e.g. Boost, depending on your code)  
 
 ---
