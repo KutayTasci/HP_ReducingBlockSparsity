@@ -54,10 +54,10 @@ RM = /usr/bin/cmake -E rm -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/kutay/Desktop/Research/GPfNBM
+CMAKE_SOURCE_DIR = /home/kutay/Desktop/Research/HP_ReducingBlockSparsity
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/kutay/Desktop/Research/GPfNBM/build
+CMAKE_BINARY_DIR = /home/kutay/Desktop/Research/HP_ReducingBlockSparsity/build
 
 #=============================================================================
 # Directory level rules for the build root directory
@@ -81,14 +81,14 @@ clean: CMakeFiles/TestHP.dir/clean
 CMakeFiles/TestHP.dir/all:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/TestHP.dir/build.make CMakeFiles/TestHP.dir/depend
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/TestHP.dir/build.make CMakeFiles/TestHP.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/home/kutay/Desktop/Research/GPfNBM/build/CMakeFiles --progress-num=1,2,3,4,5,6 "Built target TestHP"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/home/kutay/Desktop/Research/HP_ReducingBlockSparsity/build/CMakeFiles --progress-num=1,2,3,4,5,6 "Built target TestHP"
 .PHONY : CMakeFiles/TestHP.dir/all
 
 # Build rule for subdir invocation for target.
 CMakeFiles/TestHP.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/kutay/Desktop/Research/GPfNBM/build/CMakeFiles 6
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/kutay/Desktop/Research/HP_ReducingBlockSparsity/build/CMakeFiles 6
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 CMakeFiles/TestHP.dir/all
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/kutay/Desktop/Research/GPfNBM/build/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/kutay/Desktop/Research/HP_ReducingBlockSparsity/build/CMakeFiles 0
 .PHONY : CMakeFiles/TestHP.dir/rule
 
 # Convenience name for target.

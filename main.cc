@@ -31,7 +31,7 @@ void printCSR(size_t* ia, size_t* ja, size_t rows) {
 int main(int argc, char* argv[]) {
     
 
-    size_t number_of_blocks = 1024;
+    size_t number_of_blocks = 128;
     size_t block_size = 16;
     size_t rows = number_of_blocks * block_size;
     size_t cols = number_of_blocks * block_size;
@@ -55,11 +55,21 @@ int main(int argc, char* argv[]) {
     reorder_HPNBM(ia, ja, rows, block_size, bcsr, true);
 
     bcsr = nullptr;
+    reorder_HPNBM_PaToH(ia, ja, rows, block_size, bcsr, true);
+
+
+    bcsr = nullptr;
+    reorder_HPRownet(ia, ja, rows, block_size, bcsr, true);
+
+    bcsr = nullptr;
     reorder_RCM_HPNBM(ia, ja, rows, block_size, bcsr, true);
 
     bcsr = nullptr;
     reorder_HPSB_HPNBM(ia, ja, rows, block_size, bcsr, true);
 
+
+    bcsr = nullptr;
+    reorder_HPRownet_HPNBM(ia, ja, rows, block_size, bcsr, true);
 
     return 0; // Indicate successful execution
 }

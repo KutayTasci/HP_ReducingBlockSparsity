@@ -31,6 +31,9 @@ void reorder_HPSB(size_t* ia, size_t* ja, size_t n, size_t block_size, BlockCSR*
  */
 void reorder_HPNBM(size_t* ia, size_t* ja, size_t n, size_t block_size, BlockCSR*& bcsr, bool verbose=false);
 
+void reorder_HPNBM_PaToH(size_t* ia, size_t* ja, size_t n, size_t block_size, BlockCSR*& bcsr, bool verbose=false);
+
+void  reorder_HPRownet(size_t* ia, size_t* ja, size_t n, size_t block_size, BlockCSR*& bcsr, bool verbose=false);
 /*
  * @brief Reorders a sparse matrix using the combination of Reverse Cuthill-McKee and Hypergraph Partititoning Non-empty block minimization algorithms and converts it to BlockCSR format.
 
@@ -41,4 +44,8 @@ void reorder_RCM_HPNBM(size_t* ia, size_t* ja, size_t n, size_t block_size, Bloc
 
  */
 void reorder_HPSB_HPNBM(size_t* ia, size_t* ja, size_t n, size_t block_size, BlockCSR*& bcsr, bool verbose=false);
+
+void reorder_HPRownet_HPNBM(size_t* ia, size_t* ja, size_t n, size_t block_size, BlockCSR*& bcsr, bool verbose) ;
+
+
 #endif // HPNBM_REORDER_H

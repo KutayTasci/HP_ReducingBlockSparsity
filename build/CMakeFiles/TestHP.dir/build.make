@@ -53,10 +53,10 @@ RM = /usr/bin/cmake -E rm -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/kutay/Desktop/Research/GPfNBM
+CMAKE_SOURCE_DIR = /home/kutay/Desktop/Research/HP_ReducingBlockSparsity
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/kutay/Desktop/Research/GPfNBM/build
+CMAKE_BINARY_DIR = /home/kutay/Desktop/Research/HP_ReducingBlockSparsity/build
 
 # Include any dependencies generated for this target.
 include CMakeFiles/TestHP.dir/depend.make
@@ -70,74 +70,74 @@ include CMakeFiles/TestHP.dir/progress.make
 include CMakeFiles/TestHP.dir/flags.make
 
 CMakeFiles/TestHP.dir/main.cc.o: CMakeFiles/TestHP.dir/flags.make
-CMakeFiles/TestHP.dir/main.cc.o: /home/kutay/Desktop/Research/GPfNBM/main.cc
+CMakeFiles/TestHP.dir/main.cc.o: /home/kutay/Desktop/Research/HP_ReducingBlockSparsity/main.cc
 CMakeFiles/TestHP.dir/main.cc.o: CMakeFiles/TestHP.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/kutay/Desktop/Research/GPfNBM/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/TestHP.dir/main.cc.o"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/TestHP.dir/main.cc.o -MF CMakeFiles/TestHP.dir/main.cc.o.d -o CMakeFiles/TestHP.dir/main.cc.o -c /home/kutay/Desktop/Research/GPfNBM/main.cc
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/kutay/Desktop/Research/HP_ReducingBlockSparsity/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/TestHP.dir/main.cc.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/TestHP.dir/main.cc.o -MF CMakeFiles/TestHP.dir/main.cc.o.d -o CMakeFiles/TestHP.dir/main.cc.o -c /home/kutay/Desktop/Research/HP_ReducingBlockSparsity/main.cc
 
 CMakeFiles/TestHP.dir/main.cc.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/TestHP.dir/main.cc.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/kutay/Desktop/Research/GPfNBM/main.cc > CMakeFiles/TestHP.dir/main.cc.i
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/kutay/Desktop/Research/HP_ReducingBlockSparsity/main.cc > CMakeFiles/TestHP.dir/main.cc.i
 
 CMakeFiles/TestHP.dir/main.cc.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/TestHP.dir/main.cc.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/kutay/Desktop/Research/GPfNBM/main.cc -o CMakeFiles/TestHP.dir/main.cc.s
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/kutay/Desktop/Research/HP_ReducingBlockSparsity/main.cc -o CMakeFiles/TestHP.dir/main.cc.s
 
 CMakeFiles/TestHP.dir/src/HPNBM/hp.cpp.o: CMakeFiles/TestHP.dir/flags.make
-CMakeFiles/TestHP.dir/src/HPNBM/hp.cpp.o: /home/kutay/Desktop/Research/GPfNBM/src/HPNBM/hp.cpp
+CMakeFiles/TestHP.dir/src/HPNBM/hp.cpp.o: /home/kutay/Desktop/Research/HP_ReducingBlockSparsity/src/HPNBM/hp.cpp
 CMakeFiles/TestHP.dir/src/HPNBM/hp.cpp.o: CMakeFiles/TestHP.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/kutay/Desktop/Research/GPfNBM/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object CMakeFiles/TestHP.dir/src/HPNBM/hp.cpp.o"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/TestHP.dir/src/HPNBM/hp.cpp.o -MF CMakeFiles/TestHP.dir/src/HPNBM/hp.cpp.o.d -o CMakeFiles/TestHP.dir/src/HPNBM/hp.cpp.o -c /home/kutay/Desktop/Research/GPfNBM/src/HPNBM/hp.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/kutay/Desktop/Research/HP_ReducingBlockSparsity/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object CMakeFiles/TestHP.dir/src/HPNBM/hp.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/TestHP.dir/src/HPNBM/hp.cpp.o -MF CMakeFiles/TestHP.dir/src/HPNBM/hp.cpp.o.d -o CMakeFiles/TestHP.dir/src/HPNBM/hp.cpp.o -c /home/kutay/Desktop/Research/HP_ReducingBlockSparsity/src/HPNBM/hp.cpp
 
 CMakeFiles/TestHP.dir/src/HPNBM/hp.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/TestHP.dir/src/HPNBM/hp.cpp.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/kutay/Desktop/Research/GPfNBM/src/HPNBM/hp.cpp > CMakeFiles/TestHP.dir/src/HPNBM/hp.cpp.i
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/kutay/Desktop/Research/HP_ReducingBlockSparsity/src/HPNBM/hp.cpp > CMakeFiles/TestHP.dir/src/HPNBM/hp.cpp.i
 
 CMakeFiles/TestHP.dir/src/HPNBM/hp.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/TestHP.dir/src/HPNBM/hp.cpp.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/kutay/Desktop/Research/GPfNBM/src/HPNBM/hp.cpp -o CMakeFiles/TestHP.dir/src/HPNBM/hp.cpp.s
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/kutay/Desktop/Research/HP_ReducingBlockSparsity/src/HPNBM/hp.cpp -o CMakeFiles/TestHP.dir/src/HPNBM/hp.cpp.s
 
 CMakeFiles/TestHP.dir/src/HPNBM/junk.cpp.o: CMakeFiles/TestHP.dir/flags.make
-CMakeFiles/TestHP.dir/src/HPNBM/junk.cpp.o: /home/kutay/Desktop/Research/GPfNBM/src/HPNBM/junk.cpp
+CMakeFiles/TestHP.dir/src/HPNBM/junk.cpp.o: /home/kutay/Desktop/Research/HP_ReducingBlockSparsity/src/HPNBM/junk.cpp
 CMakeFiles/TestHP.dir/src/HPNBM/junk.cpp.o: CMakeFiles/TestHP.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/kutay/Desktop/Research/GPfNBM/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object CMakeFiles/TestHP.dir/src/HPNBM/junk.cpp.o"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/TestHP.dir/src/HPNBM/junk.cpp.o -MF CMakeFiles/TestHP.dir/src/HPNBM/junk.cpp.o.d -o CMakeFiles/TestHP.dir/src/HPNBM/junk.cpp.o -c /home/kutay/Desktop/Research/GPfNBM/src/HPNBM/junk.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/kutay/Desktop/Research/HP_ReducingBlockSparsity/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object CMakeFiles/TestHP.dir/src/HPNBM/junk.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/TestHP.dir/src/HPNBM/junk.cpp.o -MF CMakeFiles/TestHP.dir/src/HPNBM/junk.cpp.o.d -o CMakeFiles/TestHP.dir/src/HPNBM/junk.cpp.o -c /home/kutay/Desktop/Research/HP_ReducingBlockSparsity/src/HPNBM/junk.cpp
 
 CMakeFiles/TestHP.dir/src/HPNBM/junk.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/TestHP.dir/src/HPNBM/junk.cpp.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/kutay/Desktop/Research/GPfNBM/src/HPNBM/junk.cpp > CMakeFiles/TestHP.dir/src/HPNBM/junk.cpp.i
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/kutay/Desktop/Research/HP_ReducingBlockSparsity/src/HPNBM/junk.cpp > CMakeFiles/TestHP.dir/src/HPNBM/junk.cpp.i
 
 CMakeFiles/TestHP.dir/src/HPNBM/junk.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/TestHP.dir/src/HPNBM/junk.cpp.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/kutay/Desktop/Research/GPfNBM/src/HPNBM/junk.cpp -o CMakeFiles/TestHP.dir/src/HPNBM/junk.cpp.s
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/kutay/Desktop/Research/HP_ReducingBlockSparsity/src/HPNBM/junk.cpp -o CMakeFiles/TestHP.dir/src/HPNBM/junk.cpp.s
 
 CMakeFiles/TestHP.dir/src/HPNBM/reorder.cpp.o: CMakeFiles/TestHP.dir/flags.make
-CMakeFiles/TestHP.dir/src/HPNBM/reorder.cpp.o: /home/kutay/Desktop/Research/GPfNBM/src/HPNBM/reorder.cpp
+CMakeFiles/TestHP.dir/src/HPNBM/reorder.cpp.o: /home/kutay/Desktop/Research/HP_ReducingBlockSparsity/src/HPNBM/reorder.cpp
 CMakeFiles/TestHP.dir/src/HPNBM/reorder.cpp.o: CMakeFiles/TestHP.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/kutay/Desktop/Research/GPfNBM/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building CXX object CMakeFiles/TestHP.dir/src/HPNBM/reorder.cpp.o"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/TestHP.dir/src/HPNBM/reorder.cpp.o -MF CMakeFiles/TestHP.dir/src/HPNBM/reorder.cpp.o.d -o CMakeFiles/TestHP.dir/src/HPNBM/reorder.cpp.o -c /home/kutay/Desktop/Research/GPfNBM/src/HPNBM/reorder.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/kutay/Desktop/Research/HP_ReducingBlockSparsity/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building CXX object CMakeFiles/TestHP.dir/src/HPNBM/reorder.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/TestHP.dir/src/HPNBM/reorder.cpp.o -MF CMakeFiles/TestHP.dir/src/HPNBM/reorder.cpp.o.d -o CMakeFiles/TestHP.dir/src/HPNBM/reorder.cpp.o -c /home/kutay/Desktop/Research/HP_ReducingBlockSparsity/src/HPNBM/reorder.cpp
 
 CMakeFiles/TestHP.dir/src/HPNBM/reorder.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/TestHP.dir/src/HPNBM/reorder.cpp.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/kutay/Desktop/Research/GPfNBM/src/HPNBM/reorder.cpp > CMakeFiles/TestHP.dir/src/HPNBM/reorder.cpp.i
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/kutay/Desktop/Research/HP_ReducingBlockSparsity/src/HPNBM/reorder.cpp > CMakeFiles/TestHP.dir/src/HPNBM/reorder.cpp.i
 
 CMakeFiles/TestHP.dir/src/HPNBM/reorder.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/TestHP.dir/src/HPNBM/reorder.cpp.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/kutay/Desktop/Research/GPfNBM/src/HPNBM/reorder.cpp -o CMakeFiles/TestHP.dir/src/HPNBM/reorder.cpp.s
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/kutay/Desktop/Research/HP_ReducingBlockSparsity/src/HPNBM/reorder.cpp -o CMakeFiles/TestHP.dir/src/HPNBM/reorder.cpp.s
 
 CMakeFiles/TestHP.dir/src/HPNBM/util.cpp.o: CMakeFiles/TestHP.dir/flags.make
-CMakeFiles/TestHP.dir/src/HPNBM/util.cpp.o: /home/kutay/Desktop/Research/GPfNBM/src/HPNBM/util.cpp
+CMakeFiles/TestHP.dir/src/HPNBM/util.cpp.o: /home/kutay/Desktop/Research/HP_ReducingBlockSparsity/src/HPNBM/util.cpp
 CMakeFiles/TestHP.dir/src/HPNBM/util.cpp.o: CMakeFiles/TestHP.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/kutay/Desktop/Research/GPfNBM/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Building CXX object CMakeFiles/TestHP.dir/src/HPNBM/util.cpp.o"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/TestHP.dir/src/HPNBM/util.cpp.o -MF CMakeFiles/TestHP.dir/src/HPNBM/util.cpp.o.d -o CMakeFiles/TestHP.dir/src/HPNBM/util.cpp.o -c /home/kutay/Desktop/Research/GPfNBM/src/HPNBM/util.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/kutay/Desktop/Research/HP_ReducingBlockSparsity/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Building CXX object CMakeFiles/TestHP.dir/src/HPNBM/util.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/TestHP.dir/src/HPNBM/util.cpp.o -MF CMakeFiles/TestHP.dir/src/HPNBM/util.cpp.o.d -o CMakeFiles/TestHP.dir/src/HPNBM/util.cpp.o -c /home/kutay/Desktop/Research/HP_ReducingBlockSparsity/src/HPNBM/util.cpp
 
 CMakeFiles/TestHP.dir/src/HPNBM/util.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/TestHP.dir/src/HPNBM/util.cpp.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/kutay/Desktop/Research/GPfNBM/src/HPNBM/util.cpp > CMakeFiles/TestHP.dir/src/HPNBM/util.cpp.i
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/kutay/Desktop/Research/HP_ReducingBlockSparsity/src/HPNBM/util.cpp > CMakeFiles/TestHP.dir/src/HPNBM/util.cpp.i
 
 CMakeFiles/TestHP.dir/src/HPNBM/util.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/TestHP.dir/src/HPNBM/util.cpp.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/kutay/Desktop/Research/GPfNBM/src/HPNBM/util.cpp -o CMakeFiles/TestHP.dir/src/HPNBM/util.cpp.s
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/kutay/Desktop/Research/HP_ReducingBlockSparsity/src/HPNBM/util.cpp -o CMakeFiles/TestHP.dir/src/HPNBM/util.cpp.s
 
 # Object files for target TestHP
 TestHP_OBJECTS = \
@@ -159,7 +159,7 @@ TestHP: CMakeFiles/TestHP.dir/build.make
 TestHP: /usr/lib/gcc/x86_64-linux-gnu/13/libgomp.so
 TestHP: /usr/lib/x86_64-linux-gnu/libpthread.a
 TestHP: CMakeFiles/TestHP.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=/home/kutay/Desktop/Research/GPfNBM/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Linking CXX executable TestHP"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=/home/kutay/Desktop/Research/HP_ReducingBlockSparsity/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Linking CXX executable TestHP"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/TestHP.dir/link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.
@@ -171,6 +171,6 @@ CMakeFiles/TestHP.dir/clean:
 .PHONY : CMakeFiles/TestHP.dir/clean
 
 CMakeFiles/TestHP.dir/depend:
-	cd /home/kutay/Desktop/Research/GPfNBM/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/kutay/Desktop/Research/GPfNBM /home/kutay/Desktop/Research/GPfNBM /home/kutay/Desktop/Research/GPfNBM/build /home/kutay/Desktop/Research/GPfNBM/build /home/kutay/Desktop/Research/GPfNBM/build/CMakeFiles/TestHP.dir/DependInfo.cmake "--color=$(COLOR)"
+	cd /home/kutay/Desktop/Research/HP_ReducingBlockSparsity/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/kutay/Desktop/Research/HP_ReducingBlockSparsity /home/kutay/Desktop/Research/HP_ReducingBlockSparsity /home/kutay/Desktop/Research/HP_ReducingBlockSparsity/build /home/kutay/Desktop/Research/HP_ReducingBlockSparsity/build /home/kutay/Desktop/Research/HP_ReducingBlockSparsity/build/CMakeFiles/TestHP.dir/DependInfo.cmake "--color=$(COLOR)"
 .PHONY : CMakeFiles/TestHP.dir/depend
 

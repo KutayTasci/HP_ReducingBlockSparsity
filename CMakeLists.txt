@@ -44,11 +44,13 @@ set(SOURCES
 include_directories(
     ${CMAKE_SOURCE_DIR}/include
     /opt/boost_1_82_0/include
+    ./ext/      # add PaToH headers
 )
 
 link_directories(
     /opt/boost_1_82_0/lib
     /usr/local/lib
+    ./ext/
 )
 
 # -------------------------------
@@ -59,13 +61,14 @@ add_executable(TestHP ${SOURCES})
 target_link_libraries(TestHP 
     mtkahypar
     boost_program_options
-    OpenMP::OpenMP_CXX   # ✅ Add OpenMP
+    OpenMP::OpenMP_CXX   # OpenMP
+    patoh                # PaToH
 )
 
 # -------------------------------
 # RPATH settings
 # -------------------------------
 set_target_properties(TestHP PROPERTIES
-    BUILD_RPATH "/opt/boost_1_82_0/lib;/usr/local/lib"
-    INSTALL_RPATH "/opt/boost_1_82_0/lib;/usr/local/lib"
+    BUILD_RPATH "/opt/boost_1_82_0/lib;/usr/local/lib;./ext/"
+    INSTALL_RPATH "/opt/boost_1_82_0/lib;/usr/local/lib;./ext/"
 )

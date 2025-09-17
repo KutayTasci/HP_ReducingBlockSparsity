@@ -4,7 +4,7 @@
 # compile CXX with /usr/bin/c++
 CXX_DEFINES = 
 
-CXX_INCLUDES = -I/home/kutay/Desktop/Research/GPfNBM/include -I/opt/boost_1_82_0/include
+CXX_INCLUDES = -I/home/kutay/Desktop/Research/HP_ReducingBlockSparsity/include -I/opt/boost_1_82_0/include -I/home/kutay/Desktop/Research/HP_ReducingBlockSparsity/./ext
 
 CXX_FLAGS =  -O3 -std=gnu++17 -fopenmp
 
