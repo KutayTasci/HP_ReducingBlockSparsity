@@ -51,5 +51,6 @@ void reorderCSR_Rows(size_t* ia, size_t* ja, size_t rows, size_t cols, size_t* r
 void reorderCSR_Cols(size_t* ia, size_t* ja, size_t rows, size_t cols, size_t* col_perm, size_t*& ia_new, size_t*& ja_new);
 
 void create_BlockCSR(size_t* block_row_ind, size_t* block_col_ind, size_t num_blocks, size_t* ia, size_t* ja, size_t rows, size_t cols, size_t* row_perm, size_t* column_perm, BlockCSR*& bcsr);
+void analyzeBlockCSR(BlockCSR* bcsr);
 
 #endif

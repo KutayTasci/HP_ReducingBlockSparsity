@@ -355,28 +355,91 @@ void create_BlockCSR(size_t* block_row_ind, size_t* block_col_ind, size_t num_bl
 
     //print bcsr details
     /*
-    std::cout << "Block CSR created." << std::endl;
+    std::cout << "Block Indices: ";
     for (i = 0; i <= num_blocks_found; i++) {
         printf("%zu ", bcsr->block_indices[i]);
     }
     std::cout << std::endl;
-    std::cout << "Total number of rows in all blocks: " << ctr_rows << std::endl;
+    std::cout << "IA:";
     for (i = 0; i <= ctr_rows; i++) {
         printf("%zu ", bcsr->ia[i]);
     }
     std::cout << " " << std::endl;
-    std::cout << "Total number of non-zeros in all blocks: " << ctr_nnz << std::endl;
+    std::cout << "Row mapping of all rows in all blocks: ";
     for (i = 0; i < ctr_rows; i++) {
         printf("%zu ", bcsr->row_map[i]);
     }
     std::cout << std::endl;
-    std::cout << "Column indices of non-zeros in all blocks: " << std::endl;
+    std::cout  << "JA: ";
     for (i = 0; i < ctr_nnz; i++) {
         printf("%zu ", bcsr->ja[i]);
     }
     std::cout << std::endl;
     */
 
+}
+
+void analyzeBlockCSR(BlockCSR* bcsr) {
+
+    size_t total_nnz = bcsr->ia[bcsr->block_indices[bcsr->num_blocks]];
+    double avg_block_nnz = (double)total_nnz / bcsr->num_blocks;
+    double block_sparsity = (double)bcsr->num_blocks / (bcsr->num_block_rows * bcsr->num_block_cols);
+
+    std::unordered_map<std::string, int> block_row_dimension_counts;
+
+    for (size_t b = 0; b < bcsr->num_block_rows; ++b) {
+        size_t start_row = bcsr->block_row_ind[b];
+        size_t end_row = bcsr->block_row_ind[b + 1];
+
+        size_t start_col = bcsr->block_col_ind[b];
+        size_t end_col = bcsr->block_col_ind[b + 1];
+        
+        size_t block_rows = end_row - start_row;
+        size_t block_cols = end_col - start_col;
+
+        std::string key = std::to_string(block_rows) + "x" + std::to_string(block_cols);
+        block_row_dimension_counts[key]++;
+    }
+
+    int* nnz_per_block = new int[bcsr->num_blocks];
+    double avg_nnz_per_block = 0.0;
+    double variance_nnz_per_block = 0.0;
+    int max_nnz_per_block = 0;
+    int min_nnz_per_block = total_nnz;
+    for (size_t b = 0; b < bcsr->num_blocks; ++b) {
+        size_t start = bcsr->block_indices[b];
+        size_t end = bcsr->block_indices[b + 1];
+        nnz_per_block[b] = bcsr->ia[end] - bcsr->ia[start];
+
+        avg_nnz_per_block += nnz_per_block[b];
+        if (nnz_per_block[b] > max_nnz_per_block) {
+            max_nnz_per_block = nnz_per_block[b];
+        }
+        if (nnz_per_block[b] < min_nnz_per_block) {
+            min_nnz_per_block = nnz_per_block[b];
+        }
+        variance_nnz_per_block += nnz_per_block[b] * nnz_per_block[b];
+    }
+    avg_nnz_per_block /= bcsr->num_blocks;
+    variance_nnz_per_block = (variance_nnz_per_block / bcsr->num_blocks) - (avg_nnz_per_block * avg_nnz_per_block);
+
+    std::cout << "----------------------------------------" << std::endl;
+    std::cout << "Block CSR Analysis Results:" << std::endl;
+    std::cout << "Block CSR Analysis:" << std::endl;
+    std::cout << "Number of block rows: " << bcsr->num_block_rows << std::endl;
+    std::cout << "Number of block columns: " << bcsr->num_block_cols << std::endl;
+    std::cout << "Number of non-empty blocks: " << bcsr->num_blocks << std::endl;
+    std::cout << "Total number of non-zeros in all blocks: " << total_nnz << std::endl;
+    std::cout << "Average number of non-zeros per block: " << avg_nnz_per_block << std::endl;
+    std::cout << "Variance of non-zeros per block: " << variance_nnz_per_block << std::endl;
+    std::cout << "Max number of non-zeros in a block: " << max_nnz_per_block << std::endl;
+    std::cout << "Min number of non-zeros in a block: " << min_nnz_per_block << std::endl;
+
+
+    std::cout << "Block sparsity (non-empty blocks / total blocks): " << block_sparsity * 100 << "%" << std::endl;
+    for (const auto& pair : block_row_dimension_counts) {
+        std::cout << "Block dimension " << pair.first << ": " << pair.second << " blocks" << std::endl;
+    }
 }
 
 void freeBlockCSR(BlockCSR& bcsr) {

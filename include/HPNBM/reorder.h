@@ -47,5 +47,5 @@ void reorder_HPSB_HPNBM(size_t* ia, size_t* ja, size_t n, size_t block_size, Blo
 
 void reorder_HPRownet_HPNBM(size_t* ia, size_t* ja, size_t n, size_t block_size, BlockCSR*& bcsr, bool verbose) ;
 
-
+void reorder_TwoConstraint(size_t* ia, size_t* ja, size_t n, size_t block_size, BlockCSR*& bcsr, bool verbose);
 #endif // HPNBM_REORDER_H

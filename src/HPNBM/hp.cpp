@@ -96,7 +96,7 @@ void HPSB_RowNet(
     }
 
     // Partitioning parameters
-    mt_kahypar_set_partitioning_parameters(context, num_parts, 0.10, KM1);
+    mt_kahypar_set_partitioning_parameters(context, num_parts, 0.03, KM1);
     mt_kahypar_set_seed(42);
     mt_kahypar_status_t status = mt_kahypar_set_context_parameter(context, VERBOSE, "0", &error);
     assert(status == SUCCESS);
@@ -268,7 +268,7 @@ void HPNBM(
         node_weights[i] = 1;
     }
     for (size_t i = 0; i < num_parts; i++) {
-        node_weights[num_nodes_t + i] = part_local_sizes[i];
+        node_weights[num_nodes_t + i] = 2 * part_local_sizes[i];
     }
 
     // Net weights: all 1
@@ -303,7 +303,7 @@ void HPNBM(
     std::cout << "Fixed vertices set.\n";
 
     // Set partitioning parameters
-    mt_kahypar_set_partitioning_parameters(context, num_parts, 0.1, KM1);
+    mt_kahypar_set_partitioning_parameters(context, num_parts, 0.03, KM1);
     mt_kahypar_set_seed(42);
     status = mt_kahypar_set_context_parameter(context, VERBOSE, "0", &error);
     assert(status == SUCCESS);
@@ -504,7 +504,7 @@ void HPNBM_Patoh(
     assert(num_parts == args._k);
     PaToH_Part(&args, num_nodes, num_hyperedges, 1, 1, node_weights, net_weights, net_indices, nets, targetweights,
                     partvec, partweights, &cut);
-    printf("Hypergraph allocated.\n");
+
 
     // Allocate part_sizes array for block boundaries
     size_t* part_sizes = new size_t[num_parts + 1];
@@ -704,7 +704,7 @@ void HP_Rownet(
     }
 
     // Partitioning parameters
-    mt_kahypar_set_partitioning_parameters(context, num_parts, 0.10, KM1);
+    mt_kahypar_set_partitioning_parameters(context, num_parts, 0.03, KM1);
     mt_kahypar_set_seed(42);
     mt_kahypar_status_t status = mt_kahypar_set_context_parameter(context, VERBOSE, "0", &error);
     assert(status == SUCCESS);
@@ -745,5 +745,123 @@ void HP_Rownet(
     mt_kahypar_free_context(context);
     mt_kahypar_free_hypergraph(hypergraph);
     mt_kahypar_free_partitioned_hypergraph(partitioned_hg);
+
+}
+
+void HP_TwoConstraint(
+    size_t* ia, 
+    size_t* ja, 
+    size_t rows, 
+    size_t cols, 
+    size_t num_parts, 
+    size_t block_size, 
+    size_t*& row_perm,
+    size_t*& col_perm, 
+    size_t*& block_row_ptr, 
+    size_t*& block_col_ptr
+) {
+     if (cols == 0 || ia[rows] == 0) {
+        std::cerr << "Error: Zero-sized allocation detected." << std::endl;
+        return;
+    }
+
+
+    row_perm = new size_t[rows];
+    col_perm = new size_t[cols];
+
+    PaToH_Parameters args;
+    int *cwghts, *nwghts, *partvec, cut, *partweights;
+    int n_constraints = 2;
+
+    int num_nodes = rows + cols;
+    int num_hyperedges = rows;
+
+    int* net_indices = new int[num_hyperedges + 1];
+    int* nets = new int[ia[rows] + rows];
+
+    net_indices[0] = 0;
+    for (size_t i = 0 ; i < rows; i++) {
+        net_indices[i + 1] = net_indices[i] + (ia[i + 1] - ia[i]) + 1;
+        size_t tmp = net_indices[i];
+        for (size_t j = ia[i]; j < ia[i + 1]; j++) {
+            nets[tmp++] = ja[j];
+        }
+        nets[tmp] = cols + i; // Add row node
+    }
+
+    std::cout << "Hypergraph constructed.\n";
+    std::cout << "num_nodes: " << num_nodes << ", num_hyperedges: " << num_hyperedges << std::endl;
+
+    // Node weights: 1 for normal nodes, part_local_sizes for anchor nodes
+    int* node_weights = new int[num_nodes * n_constraints];
+    for (size_t i = 0; i < cols; i++) {
+        node_weights[n_constraints * i] = 1;
+        node_weights[n_constraints * i + 1] = 0;
+    }
+
+    for (size_t i = cols; i < num_nodes; i++) {
+        node_weights[n_constraints * i] = 0;
+        node_weights[n_constraints * i + 1] = 1;
+    }
+
+    // Net weights: all 1
+    int* net_weights = new int[num_hyperedges];
+    for (size_t i = 0; i < num_hyperedges; i++) {
+        net_weights[i] = 1;
+    }
+
+    PaToH_Initialize_Parameters(&args, PATOH_CONPART, PATOH_SUGPARAM_DEFAULT);
+    
+    args._k = num_parts;
+    args.seed = 42;
+    args.balance= 0;
+    args.init_imbal = 0.001;
+    args.final_imbal = 0.001;
+
+    partvec =  (int *) malloc(num_nodes*sizeof(int));
+
+    PaToH_Alloc(&args, num_nodes, num_hyperedges, 1, node_weights, net_weights, net_indices, nets);
+    
+    // Partition the hypergraph
+    //float* targetweights = (float *) malloc(args._k*n_constraints*sizeof(float));
+    partweights = (int *) malloc(args._k*n_constraints*sizeof(int));
+
+
+    assert(num_parts == args._k);
+    PaToH_Part(&args, num_nodes, num_hyperedges, n_constraints, 0, node_weights, net_weights, net_indices, nets, NULL,
+                    partvec, partweights, &cut);
+
+
+    int* row_part_sizes = new int[num_parts + 1];
+    int* col_part_sizes = new int[num_parts + 1];
+    std::fill(row_part_sizes, row_part_sizes + num_parts + 1, 0);
+    std::fill(col_part_sizes, col_part_sizes + num_parts + 1, 0);
+
+    for (size_t i = 0; i < rows; ++i) {
+        row_part_sizes[partvec[cols + i] + 1]++;
+        col_part_sizes[partvec[i] + 1]++;
+    }
+
+    for (size_t i = 1; i <= num_parts; i++) {
+        row_part_sizes[i] += row_part_sizes[i - 1];
+        col_part_sizes[i] += col_part_sizes[i - 1];
+    }
+
+    for (size_t i = 0; i <= num_parts; i++) {
+        block_row_ptr[i] = row_part_sizes[i];
+        block_col_ptr[i] = col_part_sizes[i];
+    }
+
+    // Reorder rows by partition
+    for (size_t i = 0; i < rows; ++i) {
+        size_t part = partvec[cols + i];
+        row_perm[row_part_sizes[part]] = i;
+        row_part_sizes[part]++;
+    }
+    for (size_t i = 0; i < cols; ++i) {
+        size_t part = partvec[i];
+        col_perm[col_part_sizes[part]] = i;
+        col_part_sizes[part]++;
+    }
 
 }
