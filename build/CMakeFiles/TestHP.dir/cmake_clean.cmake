@@ -5,6 +5,8 @@ file(REMOVE_RECURSE
   "CMakeFiles/TestHP.dir/src/HPNBM/hp.cpp.o.d"
   "CMakeFiles/TestHP.dir/src/HPNBM/junk.cpp.o"
   "CMakeFiles/TestHP.dir/src/HPNBM/junk.cpp.o.d"
+  "CMakeFiles/TestHP.dir/src/HPNBM/mask_generator.cpp.o"
+  "CMakeFiles/TestHP.dir/src/HPNBM/mask_generator.cpp.o.d"
   "CMakeFiles/TestHP.dir/src/HPNBM/reorder.cpp.o"
   "CMakeFiles/TestHP.dir/src/HPNBM/reorder.cpp.o.d"
   "CMakeFiles/TestHP.dir/src/HPNBM/util.cpp.o"

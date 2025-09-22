@@ -201,6 +201,30 @@ src/HPNBM/junk.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/TestHP.dir/build.make CMakeFiles/TestHP.dir/src/HPNBM/junk.cpp.s
 .PHONY : src/HPNBM/junk.cpp.s
 
+src/HPNBM/mask_generator.o: src/HPNBM/mask_generator.cpp.o
+.PHONY : src/HPNBM/mask_generator.o
+
+# target to build an object file
+src/HPNBM/mask_generator.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/TestHP.dir/build.make CMakeFiles/TestHP.dir/src/HPNBM/mask_generator.cpp.o
+.PHONY : src/HPNBM/mask_generator.cpp.o
+
+src/HPNBM/mask_generator.i: src/HPNBM/mask_generator.cpp.i
+.PHONY : src/HPNBM/mask_generator.i
+
+# target to preprocess a source file
+src/HPNBM/mask_generator.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/TestHP.dir/build.make CMakeFiles/TestHP.dir/src/HPNBM/mask_generator.cpp.i
+.PHONY : src/HPNBM/mask_generator.cpp.i
+
+src/HPNBM/mask_generator.s: src/HPNBM/mask_generator.cpp.s
+.PHONY : src/HPNBM/mask_generator.s
+
+# target to generate assembly for a file
+src/HPNBM/mask_generator.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/TestHP.dir/build.make CMakeFiles/TestHP.dir/src/HPNBM/mask_generator.cpp.s
+.PHONY : src/HPNBM/mask_generator.cpp.s
+
 src/HPNBM/reorder.o: src/HPNBM/reorder.cpp.o
 .PHONY : src/HPNBM/reorder.o
 
@@ -267,6 +291,9 @@ help:
 	@echo "... src/HPNBM/junk.o"
 	@echo "... src/HPNBM/junk.i"
 	@echo "... src/HPNBM/junk.s"
+	@echo "... src/HPNBM/mask_generator.o"
+	@echo "... src/HPNBM/mask_generator.i"
+	@echo "... src/HPNBM/mask_generator.s"
 	@echo "... src/HPNBM/reorder.o"
 	@echo "... src/HPNBM/reorder.i"
 	@echo "... src/HPNBM/reorder.s"

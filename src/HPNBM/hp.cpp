@@ -303,7 +303,7 @@ void HPNBM(
     std::cout << "Fixed vertices set.\n";
 
     // Set partitioning parameters
-    mt_kahypar_set_partitioning_parameters(context, num_parts, 0.03, KM1);
+    mt_kahypar_set_partitioning_parameters(context, num_parts, 0.001, KM1);
     mt_kahypar_set_seed(42);
     status = mt_kahypar_set_context_parameter(context, VERBOSE, "0", &error);
     assert(status == SUCCESS);
@@ -478,6 +478,9 @@ void HPNBM_Patoh(
     
     args._k = num_parts;
     args.seed = 42;
+    args.balance= 0;
+    args.init_imbal = 0.001;
+    args.final_imbal = 0.001;
 
 
     partvec =  (int *) malloc(num_nodes*sizeof(int));
@@ -545,6 +548,7 @@ void HPNBM_Patoh(
     // Cleanup
     delete[] part_sizes;
     delete[] tmp_parts;
+    PaToH_Free();
 }
 
 
@@ -810,7 +814,7 @@ void HP_TwoConstraint(
         net_weights[i] = 1;
     }
 
-    PaToH_Initialize_Parameters(&args, PATOH_CONPART, PATOH_SUGPARAM_DEFAULT);
+    PaToH_Initialize_Parameters(&args, PATOH_CONPART, PATOH_SUGPARAM_QUALITY);
     
     args._k = num_parts;
     args.seed = 42;
@@ -863,5 +867,6 @@ void HP_TwoConstraint(
         col_perm[col_part_sizes[part]] = i;
         col_part_sizes[part]++;
     }
+    PaToH_Free();
 
 }
