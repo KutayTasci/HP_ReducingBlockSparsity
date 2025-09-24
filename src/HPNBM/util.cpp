@@ -215,7 +215,7 @@ void reorderCSR_Cols(size_t* ia, size_t* ja, size_t rows, size_t cols, size_t* c
         }
         col_map[col_perm[j]] = j;
     }
-    printf("Column reordering done.\n");
+    //printf("Column reordering done.\n");
     for (size_t i = 0; i < ia[rows]; ++i) {
         size_t old_col = ja[i];
         size_t new_col = col_map[old_col];
@@ -423,17 +423,16 @@ void analyzeBlockCSR(BlockCSR* bcsr) {
     avg_nnz_per_block /= bcsr->num_blocks;
     variance_nnz_per_block = (variance_nnz_per_block / bcsr->num_blocks) - (avg_nnz_per_block * avg_nnz_per_block);
 
-    std::cout << "----------------------------------------" << std::endl;
+    //std::cout << "----------------------------------------" << std::endl;
     std::cout << "Block CSR Analysis Results:" << std::endl;
-    std::cout << "Block CSR Analysis:" << std::endl;
-    std::cout << "Number of block rows: " << bcsr->num_block_rows << std::endl;
-    std::cout << "Number of block columns: " << bcsr->num_block_cols << std::endl;
+    //std::cout << "Number of block rows: " << bcsr->num_block_rows << std::endl;
+    //std::cout << "Number of block columns: " << bcsr->num_block_cols << std::endl;
     std::cout << "Number of non-empty blocks: " << bcsr->num_blocks << std::endl;
-    std::cout << "Total number of non-zeros in all blocks: " << total_nnz << std::endl;
+    //std::cout << "Total number of non-zeros in all blocks: " << total_nnz << std::endl;
     std::cout << "Average number of non-zeros per block: " << avg_nnz_per_block << std::endl;
-    std::cout << "Variance of non-zeros per block: " << variance_nnz_per_block << std::endl;
-    std::cout << "Max number of non-zeros in a block: " << max_nnz_per_block << std::endl;
-    std::cout << "Min number of non-zeros in a block: " << min_nnz_per_block << std::endl;
+    //std::cout << "Variance of non-zeros per block: " << variance_nnz_per_block << std::endl;
+    //std::cout << "Max number of non-zeros in a block: " << max_nnz_per_block << std::endl;
+    //std::cout << "Min number of non-zeros in a block: " << min_nnz_per_block << std::endl;
 
 
     std::cout << "Block sparsity (non-empty blocks / total blocks): " << block_sparsity * 100 << "%" << std::endl;

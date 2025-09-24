@@ -7,6 +7,7 @@
 #include <iostream>
 #include <thread>
 #include <cassert>
+#include <random>
 
 
 
@@ -97,7 +98,9 @@ void HPSB_RowNet(
 
     // Partitioning parameters
     mt_kahypar_set_partitioning_parameters(context, num_parts, 0.03, KM1);
-    mt_kahypar_set_seed(42);
+    // set random seed
+    int seed = std::random_device{}();
+    mt_kahypar_set_seed(seed);
     mt_kahypar_status_t status = mt_kahypar_set_context_parameter(context, VERBOSE, "0", &error);
     assert(status == SUCCESS);
 
@@ -254,8 +257,8 @@ void HPNBM(
     }
 
     // Debug output
-    std::cout << "Hypergraph constructed.\n";
-    std::cout << "num_nodes: " << num_nodes << ", num_hyperedges: " << num_hyperedges << std::endl;
+    //std::cout << "Hypergraph constructed.\n";
+    //std::cout << "num_nodes: " << num_nodes << ", num_hyperedges: " << num_hyperedges << std::endl;
 
     if (num_nodes == 0 || num_hyperedges == 0) {
         std::cerr << "Error: num_nodes or num_hyperedges is zero, cannot allocate weights arrays." << std::endl;
@@ -276,7 +279,7 @@ void HPNBM(
     std::fill(net_weights.get(), net_weights.get() + num_hyperedges, 1);
 
     // Create mt-kahypar context and hypergraph
-    mt_kahypar_context_t* context = mt_kahypar_context_from_preset(DEFAULT);
+    mt_kahypar_context_t* context = mt_kahypar_context_from_preset(HIGHEST_QUALITY);
     mt_kahypar_hypergraph_t hypergraph = mt_kahypar_create_hypergraph(
         context, num_nodes, num_hyperedges,
         net_indices.get(), nets.get(),
@@ -300,11 +303,12 @@ void HPNBM(
         std::cout << error.msg << std::endl;
         std::exit(1);
     }
-    std::cout << "Fixed vertices set.\n";
+    //std::cout << "Fixed vertices set.\n";
 
     // Set partitioning parameters
-    mt_kahypar_set_partitioning_parameters(context, num_parts, 0.001, KM1);
-    mt_kahypar_set_seed(42);
+    mt_kahypar_set_partitioning_parameters(context, num_parts, 0.0001, KM1);
+    int seed = std::random_device{}();
+    mt_kahypar_set_seed(seed);
     status = mt_kahypar_set_context_parameter(context, VERBOSE, "0", &error);
     assert(status == SUCCESS);
 
@@ -348,9 +352,9 @@ void HPNBM(
     }
 
     // Set block_row_ptr boundaries
-    for (size_t i = 0; i <= num_parts; i++) {
-        block_row_ptr[i] = part_sizes[i];
-    }
+    //for (size_t i = 0; i <= num_parts; i++) {
+    //    block_row_ptr[i] = part_sizes[i];
+    //}
 
     // Reorder rows by partition
     for (size_t i = 0; i < rows; i++) {
@@ -451,8 +455,8 @@ void HPNBM_Patoh(
     }
 
     // Debug output
-    std::cout << "Hypergraph constructed.\n";
-    std::cout << "num_nodes: " << num_nodes << ", num_hyperedges: " << num_hyperedges << std::endl;
+    //std::cout << "Hypergraph constructed.\n";
+    //std::cout << "num_nodes: " << num_nodes << ", num_hyperedges: " << num_hyperedges << std::endl;
 
     if (num_nodes == 0 || num_hyperedges == 0) {
         std::cerr << "Error: num_nodes or num_hyperedges is zero, cannot allocate weights arrays." << std::endl;
@@ -477,7 +481,8 @@ void HPNBM_Patoh(
     PaToH_Initialize_Parameters(&args, PATOH_CONPART, PATOH_SUGPARAM_SPEED);
     
     args._k = num_parts;
-    args.seed = 42;
+    int seed = std::random_device{}();
+    args.seed = seed;
     args.balance= 0;
     args.init_imbal = 0.001;
     args.final_imbal = 0.001;
@@ -709,7 +714,8 @@ void HP_Rownet(
 
     // Partitioning parameters
     mt_kahypar_set_partitioning_parameters(context, num_parts, 0.03, KM1);
-    mt_kahypar_set_seed(42);
+    int seed = std::random_device{}();
+    mt_kahypar_set_seed(seed);
     mt_kahypar_status_t status = mt_kahypar_set_context_parameter(context, VERBOSE, "0", &error);
     assert(status == SUCCESS);
 
@@ -793,8 +799,8 @@ void HP_TwoConstraint(
         nets[tmp] = cols + i; // Add row node
     }
 
-    std::cout << "Hypergraph constructed.\n";
-    std::cout << "num_nodes: " << num_nodes << ", num_hyperedges: " << num_hyperedges << std::endl;
+    //std::cout << "Hypergraph constructed.\n";
+    //std::cout << "num_nodes: " << num_nodes << ", num_hyperedges: " << num_hyperedges << std::endl;
 
     // Node weights: 1 for normal nodes, part_local_sizes for anchor nodes
     int* node_weights = new int[num_nodes * n_constraints];
@@ -817,7 +823,8 @@ void HP_TwoConstraint(
     PaToH_Initialize_Parameters(&args, PATOH_CONPART, PATOH_SUGPARAM_QUALITY);
     
     args._k = num_parts;
-    args.seed = 42;
+    int seed = std::random_device{}();
+    args.seed = seed;
     args.balance= 0;
     args.init_imbal = 0.001;
     args.final_imbal = 0.001;

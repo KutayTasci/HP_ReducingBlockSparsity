@@ -5,6 +5,8 @@
 #include "HPNBM/util.h"
 
 
+void reorder_baseline(size_t* ia, size_t* ja, size_t n, size_t block_size, BlockCSR*& bcsr, bool verbose=false);
+
 /**
  * @brief Reorders a sparse matrix using the Reverse Cuthill-McKee (RCM) algorithm and converts it to BlockCSR format.
  *

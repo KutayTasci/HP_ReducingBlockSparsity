@@ -10,6 +10,53 @@
 #include <cstdlib> 
 
 
+void reorder_baseline(size_t* ia, size_t* ja, size_t n, size_t block_size, BlockCSR*& bcsr, bool verbose) {
+    size_t number_of_blocks = n / block_size;
+    size_t* block_row_ind = new size_t[number_of_blocks + 1];
+    size_t* block_col_ind = new size_t[number_of_blocks + 1];
+
+    size_t rows = n;
+    size_t cols = n;
+
+    block_row_ind[0] = 0;
+    for (size_t i = 1; i <= number_of_blocks; ++i) {
+        block_row_ind[i] = i * block_size;
+    }
+
+    block_col_ind[0] = 0;
+    for (size_t j = 1; j <= number_of_blocks; ++j) {
+        block_col_ind[j] = j * block_size;
+    }
+
+    if (verbose) {
+        std::cout << "---------------------------------" << std::endl;
+        testBlockSparsity(block_row_ind, block_col_ind, number_of_blocks, ia, ja, rows, cols);
+    }
+
+    size_t* row_perm = new size_t[rows];
+    size_t* col_perm = new size_t[cols];
+    for (size_t i = 0; i < rows; i++) {
+        row_perm[i] = i;
+    }
+    for (size_t j = 0; j < cols; j++) {
+        col_perm[j] = j;
+    }
+
+    create_BlockCSR(block_row_ind, block_col_ind, number_of_blocks, ia, ja, rows, cols, row_perm, col_perm, bcsr);
+
+    if (verbose)
+    {
+        double block_sparsity = (double)(bcsr->num_blocks) / (number_of_blocks * number_of_blocks);
+        std::cout << "Sparsity details without reordering: " << block_sparsity * 100 << "%" << std::endl;
+    }
+
+    delete[] block_row_ind;
+    delete[] block_col_ind;
+    delete[] row_perm;
+    delete[] col_perm;
+
+}
+
 void reorder_RCM(size_t* ia, size_t* ja, size_t n, size_t block_size, BlockCSR*& bcsr, bool verbose) {
     size_t number_of_blocks = n / block_size;
     size_t* block_row_ind = new size_t[number_of_blocks + 1];

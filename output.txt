@@ -1,0 +1,454 @@
+========================
+Running experiments for matrix size: 4096 x 4096
+========================
+========================
+Experiment 1 of 2
+Matrix size: 4096 x 4096
+Block size: 16 x 16
+Total non-zeros in the mask: 136883
+Sparsity of the mask: 0.00815886
+========================
+========================
+Experimental results for Baseline
+========================
+Block CSR Analysis Results:
+Number of non-empty blocks: 19357
+Average number of non-zeros per block: 7.0715
+Block sparsity (non-empty blocks / total blocks): 29.5364%
+Block dimension 16x16: 256 blocks
+========================
+Experimental results for RCM
+========================
+Block CSR Analysis Results:
+Number of non-empty blocks: 25928
+Average number of non-zeros per block: 5.27935
+Block sparsity (non-empty blocks / total blocks): 39.563%
+Block dimension 16x16: 256 blocks
+========================
+Experimental results for Rownet_HyperGraph_Partitioning
+========================
+Block CSR Analysis Results:
+Number of non-empty blocks: 19614
+Average number of non-zeros per block: 6.97884
+Block sparsity (non-empty blocks / total blocks): 29.9286%
+Block dimension 16x16: 256 blocks
+========================
+Experimental results for Hypergraph_Partitioning_Single_Border
+========================
+Block CSR Analysis Results:
+Number of non-empty blocks: 19715
+Average number of non-zeros per block: 6.94309
+Block sparsity (non-empty blocks / total blocks): 30.0827%
+Block dimension 16x16: 256 blocks
+========================
+Experimental results for Hypergraph_Partitioning_Nonzero_Block_Minimization
+========================
+Block CSR Analysis Results:
+Number of non-empty blocks: 17906
+Average number of non-zeros per block: 7.64453
+Block sparsity (non-empty blocks / total blocks): 27.3224%
+Block dimension 16x16: 256 blocks
+========================
+Experimental results for Hypergraph_Partitioning_Two_Constraint
+========================
+Block CSR Analysis Results:
+Number of non-empty blocks: 24093
+Average number of non-zeros per block: 5.68144
+Block sparsity (non-empty blocks / total blocks): 36.763%
+Block dimension 16x16: 256 blocks
+========================
+Experimental results for RCM + Hypergraph_Partitioning_Nonzero_Block_Minimization
+========================
+Block CSR Analysis Results:
+Number of non-empty blocks: 21909
+Average number of non-zeros per block: 6.2478
+Block sparsity (non-empty blocks / total blocks): 33.4305%
+Block dimension 16x16: 256 blocks
+========================
+Experimental results for Hypergraph_Partitioning_Single_Border + Hypergraph_Partitioning_Nonzero_Block_Minimization
+========================
+Block CSR Analysis Results:
+Number of non-empty blocks: 15450
+Average number of non-zeros per block: 8.85974
+Block sparsity (non-empty blocks / total blocks): 23.5748%
+Block dimension 16x16: 256 blocks
+========================
+Experimental results for Rownet_HyperGraph_Partitioning + Hypergraph_Partitioning_Nonzero_Block_Minimization
+========================
+Block CSR Analysis Results:
+Number of non-empty blocks: 15139
+Average number of non-zeros per block: 9.04175
+Block sparsity (non-empty blocks / total blocks): 23.1003%
+Block dimension 16x16: 256 blocks
+========================
+Experiment 2 of 2
+Matrix size: 4096 x 4096
+Block size: 16 x 16
+Total non-zeros in the mask: 136618
+Sparsity of the mask: 0.00814307
+========================
+========================
+Experimental results for Baseline
+========================
+Block CSR Analysis Results:
+Number of non-empty blocks: 19298
+Average number of non-zeros per block: 7.07939
+Block sparsity (non-empty blocks / total blocks): 29.4464%
+Block dimension 16x16: 256 blocks
+========================
+Experimental results for RCM
+========================
+Block CSR Analysis Results:
+Number of non-empty blocks: 25736
+Average number of non-zeros per block: 5.30844
+Block sparsity (non-empty blocks / total blocks): 39.27%
+Block dimension 16x16: 256 blocks
+========================
+Experimental results for Rownet_HyperGraph_Partitioning
+========================
+Block CSR Analysis Results:
+Number of non-empty blocks: 19558
+Average number of non-zeros per block: 6.98527
+Block sparsity (non-empty blocks / total blocks): 29.8431%
+Block dimension 16x16: 256 blocks
+========================
+Experimental results for Hypergraph_Partitioning_Single_Border
+========================
+Block CSR Analysis Results:
+Number of non-empty blocks: 19589
+Average number of non-zeros per block: 6.97422
+Block sparsity (non-empty blocks / total blocks): 29.8904%
+Block dimension 16x16: 256 blocks
+========================
+Experimental results for Hypergraph_Partitioning_Nonzero_Block_Minimization
+========================
+Block CSR Analysis Results:
+Number of non-empty blocks: 17816
+Average number of non-zeros per block: 7.66828
+Block sparsity (non-empty blocks / total blocks): 27.1851%
+Block dimension 16x16: 256 blocks
+========================
+Experimental results for Hypergraph_Partitioning_Two_Constraint
+========================
+Block CSR Analysis Results:
+Number of non-empty blocks: 23508
+Average number of non-zeros per block: 5.81155
+Block sparsity (non-empty blocks / total blocks): 35.8704%
+Block dimension 16x16: 256 blocks
+========================
+Experimental results for RCM + Hypergraph_Partitioning_Nonzero_Block_Minimization
+========================
+Block CSR Analysis Results:
+Number of non-empty blocks: 22418
+Average number of non-zeros per block: 6.09412
+Block sparsity (non-empty blocks / total blocks): 34.2072%
+Block dimension 16x16: 256 blocks
+========================
+Experimental results for Hypergraph_Partitioning_Single_Border + Hypergraph_Partitioning_Nonzero_Block_Minimization
+========================
+Block CSR Analysis Results:
+Number of non-empty blocks: 15081
+Average number of non-zeros per block: 9.05895
+Block sparsity (non-empty blocks / total blocks): 23.0118%
+Block dimension 16x16: 256 blocks
+========================
+Experimental results for Rownet_HyperGraph_Partitioning + Hypergraph_Partitioning_Nonzero_Block_Minimization
+========================
+Block CSR Analysis Results:
+Number of non-empty blocks: 15673
+Average number of non-zeros per block: 8.71677
+Block sparsity (non-empty blocks / total blocks): 23.9151%
+Block dimension 16x16: 256 blocks
+========================
+Running experiments for matrix size: 8192 x 8192
+========================
+========================
+Experiment 1 of 2
+Matrix size: 8192 x 8192
+Block size: 16 x 16
+Total non-zeros in the mask: 294399
+Sparsity of the mask: 0.00438689
+========================
+========================
+Experimental results for Baseline
+========================
+Block CSR Analysis Results:
+Number of non-empty blocks: 50087
+Average number of non-zeros per block: 5.87775
+Block sparsity (non-empty blocks / total blocks): 19.1067%
+Block dimension 16x16: 512 blocks
+========================
+Experimental results for RCM
+========================
+Block CSR Analysis Results:
+Number of non-empty blocks: 62560
+Average number of non-zeros per block: 4.70587
+Block sparsity (non-empty blocks / total blocks): 23.8647%
+Block dimension 16x16: 512 blocks
+========================
+Experimental results for Rownet_HyperGraph_Partitioning
+========================
+Block CSR Analysis Results:
+Number of non-empty blocks: 49648
+Average number of non-zeros per block: 5.92973
+Block sparsity (non-empty blocks / total blocks): 18.9392%
+Block dimension 16x16: 512 blocks
+========================
+Experimental results for Hypergraph_Partitioning_Single_Border
+========================
+Block CSR Analysis Results:
+Number of non-empty blocks: 49705
+Average number of non-zeros per block: 5.92293
+Block sparsity (non-empty blocks / total blocks): 18.961%
+Block dimension 16x16: 512 blocks
+========================
+Experimental results for Hypergraph_Partitioning_Nonzero_Block_Minimization
+========================
+Block CSR Analysis Results:
+Number of non-empty blocks: 47068
+Average number of non-zeros per block: 6.25476
+Block sparsity (non-empty blocks / total blocks): 17.955%
+Block dimension 16x16: 512 blocks
+========================
+Experimental results for Hypergraph_Partitioning_Two_Constraint
+========================
+Block CSR Analysis Results:
+Number of non-empty blocks: 59063
+Average number of non-zeros per block: 4.98449
+Block sparsity (non-empty blocks / total blocks): 22.5307%
+Block dimension 16x16: 512 blocks
+========================
+Experimental results for RCM + Hypergraph_Partitioning_Nonzero_Block_Minimization
+========================
+Block CSR Analysis Results:
+Number of non-empty blocks: 56237
+Average number of non-zeros per block: 5.23497
+Block sparsity (non-empty blocks / total blocks): 21.4527%
+Block dimension 16x16: 512 blocks
+========================
+Experimental results for Hypergraph_Partitioning_Single_Border + Hypergraph_Partitioning_Nonzero_Block_Minimization
+========================
+Block CSR Analysis Results:
+Number of non-empty blocks: 46229
+Average number of non-zeros per block: 6.36828
+Block sparsity (non-empty blocks / total blocks): 17.635%
+Block dimension 16x16: 512 blocks
+========================
+Experimental results for Rownet_HyperGraph_Partitioning + Hypergraph_Partitioning_Nonzero_Block_Minimization
+========================
+Block CSR Analysis Results:
+Number of non-empty blocks: 39598
+Average number of non-zeros per block: 7.43469
+Block sparsity (non-empty blocks / total blocks): 15.1054%
+Block dimension 16x16: 512 blocks
+========================
+Experiment 2 of 2
+Matrix size: 8192 x 8192
+Block size: 16 x 16
+Total non-zeros in the mask: 294522
+Sparsity of the mask: 0.00438872
+========================
+========================
+Experimental results for Baseline
+========================
+Block CSR Analysis Results:
+Number of non-empty blocks: 50132
+Average number of non-zeros per block: 5.87493
+Block sparsity (non-empty blocks / total blocks): 19.1238%
+Block dimension 16x16: 512 blocks
+========================
+Experimental results for RCM
+========================
+Block CSR Analysis Results:
+Number of non-empty blocks: 62519
+Average number of non-zeros per block: 4.71092
+Block sparsity (non-empty blocks / total blocks): 23.8491%
+Block dimension 16x16: 512 blocks
+========================
+Experimental results for Rownet_HyperGraph_Partitioning
+========================
+Block CSR Analysis Results:
+Number of non-empty blocks: 49080
+Average number of non-zeros per block: 6.00086
+Block sparsity (non-empty blocks / total blocks): 18.7225%
+Block dimension 16x16: 512 blocks
+========================
+Experimental results for Hypergraph_Partitioning_Single_Border
+========================
+Block CSR Analysis Results:
+Number of non-empty blocks: 48920
+Average number of non-zeros per block: 6.02048
+Block sparsity (non-empty blocks / total blocks): 18.6615%
+Block dimension 16x16: 512 blocks
+========================
+Experimental results for Hypergraph_Partitioning_Nonzero_Block_Minimization
+========================
+Block CSR Analysis Results:
+Number of non-empty blocks: 46582
+Average number of non-zeros per block: 6.32266
+Block sparsity (non-empty blocks / total blocks): 17.7696%
+Block dimension 16x16: 512 blocks
+========================
+Experimental results for Hypergraph_Partitioning_Two_Constraint
+========================
+Block CSR Analysis Results:
+Number of non-empty blocks: 57858
+Average number of non-zeros per block: 5.09043
+Block sparsity (non-empty blocks / total blocks): 22.0711%
+Block dimension 16x16: 512 blocks
+========================
+Experimental results for RCM + Hypergraph_Partitioning_Nonzero_Block_Minimization
+========================
+Block CSR Analysis Results:
+Number of non-empty blocks: 55472
+Average number of non-zeros per block: 5.30938
+Block sparsity (non-empty blocks / total blocks): 21.1609%
+Block dimension 16x16: 512 blocks
+========================
+Experimental results for Hypergraph_Partitioning_Single_Border + Hypergraph_Partitioning_Nonzero_Block_Minimization
+========================
+Block CSR Analysis Results:
+Number of non-empty blocks: 38908
+Average number of non-zeros per block: 7.5697
+Block sparsity (non-empty blocks / total blocks): 14.8422%
+Block dimension 16x16: 512 blocks
+========================
+Experimental results for Rownet_HyperGraph_Partitioning + Hypergraph_Partitioning_Nonzero_Block_Minimization
+========================
+Block CSR Analysis Results:
+Number of non-empty blocks: 39115
+Average number of non-zeros per block: 7.52964
+Block sparsity (non-empty blocks / total blocks): 14.9212%
+Block dimension 16x16: 512 blocks
+========================
+Running experiments for matrix size: 16384 x 16384
+========================
+========================
+Experiment 1 of 2
+Matrix size: 16384 x 16384
+Block size: 16 x 16
+Total non-zeros in the mask: 629921
+Sparsity of the mask: 0.00234664
+========================
+========================
+Experimental results for Baseline
+========================
+Block CSR Analysis Results:
+Number of non-empty blocks: 118454
+Average number of non-zeros per block: 5.31785
+Block sparsity (non-empty blocks / total blocks): 11.2967%
+Block dimension 16x16: 1024 blocks
+========================
+Experimental results for RCM
+========================
+Block CSR Analysis Results:
+Number of non-empty blocks: 142140
+Average number of non-zeros per block: 4.43169
+Block sparsity (non-empty blocks / total blocks): 13.5555%
+Block dimension 16x16: 1024 blocks
+========================
+Experimental results for Rownet_HyperGraph_Partitioning
+========================
+Block CSR Analysis Results:
+Number of non-empty blocks: 117792
+Average number of non-zeros per block: 5.34774
+Block sparsity (non-empty blocks / total blocks): 11.2335%
+Block dimension 16x16: 1024 blocks
+========================
+Experimental results for Hypergraph_Partitioning_Single_Border
+========================
+Block CSR Analysis Results:
+Number of non-empty blocks: 117483
+Average number of non-zeros per block: 5.36181
+Block sparsity (non-empty blocks / total blocks): 11.2041%
+Block dimension 16x16: 1024 blocks
+========================
+Experimental results for Hypergraph_Partitioning_Nonzero_Block_Minimization
+========================
+Block CSR Analysis Results:
+Number of non-empty blocks: 109871
+Average number of non-zeros per block: 5.73328
+Block sparsity (non-empty blocks / total blocks): 10.4781%
+Block dimension 16x16: 1024 blocks
+========================
+Experimental results for Hypergraph_Partitioning_Two_Constraint
+========================
+Block CSR Analysis Results:
+Number of non-empty blocks: 131419
+Average number of non-zeros per block: 4.79323
+Block sparsity (non-empty blocks / total blocks): 12.5331%
+Block dimension 16x16: 1024 blocks
+========================
+Experimental results for RCM + Hypergraph_Partitioning_Nonzero_Block_Minimization
+========================
+Block CSR Analysis Results:
+Number of non-empty blocks: 129684
+Average number of non-zeros per block: 4.85735
+Block sparsity (non-empty blocks / total blocks): 12.3676%
+Block dimension 16x16: 1024 blocks
+========================
+Experimental results for Hypergraph_Partitioning_Single_Border + Hypergraph_Partitioning_Nonzero_Block_Minimization
+========================
+Block CSR Analysis Results:
+Number of non-empty blocks: 96796
+Average number of non-zeros per block: 6.50772
+Block sparsity (non-empty blocks / total blocks): 9.23119%
+Block dimension 16x16: 1024 blocks
+========================
+Experimental results for Rownet_HyperGraph_Partitioning + Hypergraph_Partitioning_Nonzero_Block_Minimization
+========================
+Block CSR Analysis Results:
+Number of non-empty blocks: 94890
+Average number of non-zeros per block: 6.63843
+Block sparsity (non-empty blocks / total blocks): 9.04942%
+Block dimension 16x16: 1024 blocks
+========================
+Experiment 2 of 2
+Matrix size: 16384 x 16384
+Block size: 16 x 16
+Total non-zeros in the mask: 630110
+Sparsity of the mask: 0.00234734
+========================
+========================
+Experimental results for Baseline
+========================
+Block CSR Analysis Results:
+Number of non-empty blocks: 118501
+Average number of non-zeros per block: 5.31734
+Block sparsity (non-empty blocks / total blocks): 11.3011%
+Block dimension 16x16: 1024 blocks
+========================
+Experimental results for RCM
+========================
+Block CSR Analysis Results:
+Number of non-empty blocks: 142761
+Average number of non-zeros per block: 4.41374
+Block sparsity (non-empty blocks / total blocks): 13.6147%
+Block dimension 16x16: 1024 blocks
+========================
+Experimental results for Rownet_HyperGraph_Partitioning
+========================
+Block CSR Analysis Results:
+Number of non-empty blocks: 116285
+Average number of non-zeros per block: 5.41867
+Block sparsity (non-empty blocks / total blocks): 11.0898%
+Block dimension 16x16: 1024 blocks
+========================
+Experimental results for Hypergraph_Partitioning_Single_Border
+========================
+Block CSR Analysis Results:
+Number of non-empty blocks: 116572
+Average number of non-zeros per block: 5.40533
+Block sparsity (non-empty blocks / total blocks): 11.1172%
+Block dimension 16x16: 1024 blocks
+========================
+Experimental results for Hypergraph_Partitioning_Nonzero_Block_Minimization
+========================
+Block CSR Analysis Results:
+Number of non-empty blocks: 110879
+Average number of non-zeros per block: 5.68286
+Block sparsity (non-empty blocks / total blocks): 10.5742%
+Block dimension 16x16: 1024 blocks
+========================
+Experimental results for Hypergraph_Partitioning_Two_Constraint
+========================

@@ -4,6 +4,7 @@
 #include <random>
 #include <set>
 #include <iostream>
+#include <cmath>
 
 void add_self_connections(size_t rows, size_t cols, std::set<std::pair<size_t, size_t>>& mask_set) {
     for (size_t i = 0; i < std::min(rows, cols); ++i) {
@@ -42,6 +43,7 @@ void internal_global_connections(size_t rows, size_t cols, int num_connections, 
     if (num_connections <= 0) return;
 
     std::default_random_engine generator;
+    generator.seed(std::random_device()());
     std::uniform_int_distribution<size_t> row_distribution(0, rows - 1);
 
 
@@ -82,8 +84,9 @@ void sliding_window_connections(size_t rows, size_t cols, int window_size, int d
 
 void random_connections(size_t rows, size_t cols, int connections_per_row, std::set<std::pair<size_t, size_t>>& mask_set) {
     if (connections_per_row <= 0) return;
-
+    //set random seed to real random
     std::default_random_engine generator;
+    generator.seed(std::random_device()());
     std::uniform_int_distribution<size_t> col_distribution(0, cols - 1);
 
     for (size_t i = 0; i < rows; ++i) {
@@ -116,6 +119,33 @@ void remove_causal_connections(size_t rows, size_t cols, std::set<std::pair<size
     }
 }
 
+void TwoD_dilation(size_t rows, size_t cols, size_t* segment_sizes, size_t* dilation_sizes, std::set<std::pair<size_t, size_t>>& mask_set) {
+    if (segment_sizes == nullptr || dilation_sizes == nullptr) return;
+    int size_segment = std::log2(rows) - 2;
+    int size_dilation = std::log2(rows)- 2;
+
+    if (rows != cols) return;
+    int n = rows;
+
+    if (size_segment != size_dilation) return;
+
+    // iterate trough segment sizes
+    for (int seg = 0; seg < size_segment; ++seg) {
+        int segment_size = segment_sizes[seg];
+        int dilation_size = dilation_sizes[seg];
+        for (int ptr = 0; ptr < n; ptr += segment_size) {
+            for (int i = ptr; i < std::min(ptr + segment_size, n); i += dilation_size) {
+                for (int j = ptr; j < std::min(ptr + segment_size, n); j += dilation_size) {
+                    std::pair<size_t, size_t> rc;
+                    rc.first = i;
+                    rc.second = j;
+                    mask_set.insert(rc);
+                }
+            }
+        }
+    }
+}
+
 void convert_mask_to_csr(size_t rows, size_t cols, const std::set<std::pair<size_t, size_t>>& mask_set, size_t*& ia, size_t*& ja) {
     ia = new size_t[rows + 1];
     ia[0] = 0;
@@ -138,6 +168,8 @@ void convert_mask_to_csr(size_t rows, size_t cols, const std::set<std::pair<size
     }
 }
 
+
+
 void generate_mask(
     size_t rows, 
     size_t cols, 
@@ -146,17 +178,20 @@ void generate_mask(
     int sliding_window, 
     int dilation, 
     int random_per_row, 
+    size_t* segment_sizes, 
+    size_t* dilation_sizes,
     bool apply_causal, 
     size_t*& ia, 
     size_t*& ja
 ) {
+
 
     std::set<std::pair<size_t, size_t>> mask_set;
     std::default_random_engine generator;
     std::uniform_int_distribution<size_t> distribution(0, cols - 1);
 
     add_self_connections(rows, cols, mask_set);
-
+    
     if (external_global > 0) {
         external_global_connections(rows, cols, external_global, mask_set);
     }
@@ -172,11 +207,18 @@ void generate_mask(
     if (random_per_row > 0) {
         random_connections(rows, cols, random_per_row, mask_set);
     }
-
+    
+    if (segment_sizes != nullptr && dilation_sizes != nullptr) {
+        TwoD_dilation(rows, cols, segment_sizes, dilation_sizes, mask_set);
+    }
+    printf("Self connections added.\n");
     if (apply_causal) {
         remove_causal_connections(rows, cols, mask_set);
     }
+    
 
     convert_mask_to_csr(rows, cols, mask_set, ia, ja);
+    std::cout << "Total non-zeros in the mask: " << mask_set.size() << std::endl;
+    std::cout << "Sparsity of the mask: " << static_cast<double>(mask_set.size()) / (rows * cols) << std::endl;
 
 }
