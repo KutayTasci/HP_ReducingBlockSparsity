@@ -10,7 +10,7 @@
 #include <cstdlib> 
 
 
-void reorder_baseline(size_t* ia, size_t* ja, size_t n, size_t block_size, BlockCSR*& bcsr, bool verbose) {
+void reorder_baseline(size_t* ia, size_t* ja, size_t n, size_t block_size, BSR*& bsr, bool verbose) {
     size_t number_of_blocks = n / block_size;
     size_t* block_row_ind = new size_t[number_of_blocks + 1];
     size_t* block_col_ind = new size_t[number_of_blocks + 1];
@@ -33,31 +33,21 @@ void reorder_baseline(size_t* ia, size_t* ja, size_t n, size_t block_size, Block
         testBlockSparsity(block_row_ind, block_col_ind, number_of_blocks, ia, ja, rows, cols);
     }
 
-    size_t* row_perm = new size_t[rows];
-    size_t* col_perm = new size_t[cols];
-    for (size_t i = 0; i < rows; i++) {
-        row_perm[i] = i;
-    }
-    for (size_t j = 0; j < cols; j++) {
-        col_perm[j] = j;
-    }
 
-    create_BlockCSR(block_row_ind, block_col_ind, number_of_blocks, ia, ja, rows, cols, row_perm, col_perm, bcsr);
+    create_BSR(ia, ja, rows, cols, block_size, bsr);
 
     if (verbose)
     {
-        double block_sparsity = (double)(bcsr->num_blocks) / (number_of_blocks * number_of_blocks);
+        double block_sparsity = (double)(bsr->num_blocks) / (number_of_blocks * number_of_blocks);
         std::cout << "Sparsity details without reordering: " << block_sparsity * 100 << "%" << std::endl;
     }
 
     delete[] block_row_ind;
     delete[] block_col_ind;
-    delete[] row_perm;
-    delete[] col_perm;
 
 }
 
-void reorder_RCM(size_t* ia, size_t* ja, size_t n, size_t block_size, BlockCSR*& bcsr, bool verbose) {
+void reorder_RCM(size_t* ia, size_t* ja, size_t n, size_t block_size, BSR*& bsr, bool verbose) {
     size_t number_of_blocks = n / block_size;
     size_t* block_row_ind = new size_t[number_of_blocks + 1];
     size_t* block_col_ind = new size_t[number_of_blocks + 1];
@@ -92,12 +82,14 @@ void reorder_RCM(size_t* ia, size_t* ja, size_t n, size_t block_size, BlockCSR*&
         std::cout << "ReverseCuthillMcKee execution time: " << elapsed_time_rcm.count() << " seconds." << std::endl;
     }
 
-
-    create_BlockCSR(block_row_ind, block_col_ind, number_of_blocks, ia, ja, rows, cols, perm, perm, bcsr);
+    size_t* ia_new = nullptr;
+    size_t* ja_new = nullptr;
+    reorderCSR(ia, ja, rows, cols, perm, perm, ia_new, ja_new);
+    create_BSR(ia_new, ja_new, rows, cols, block_size, bsr);
 
     if (verbose)
     {
-        double block_sparsity = (double)(bcsr->num_blocks) / (number_of_blocks * number_of_blocks);
+        double block_sparsity = (double)(bsr->num_blocks) / (number_of_blocks * number_of_blocks);
         std::cout << "Sparsity details after RCM reordering: " << block_sparsity * 100 << "%" << std::endl;
     }
     
@@ -108,7 +100,7 @@ void reorder_RCM(size_t* ia, size_t* ja, size_t n, size_t block_size, BlockCSR*&
 
 }
 
-void reorder_HPSB(size_t* ia, size_t* ja, size_t n, size_t block_size, BlockCSR*& bcsr, bool verbose) {
+void reorder_HPSB(size_t* ia, size_t* ja, size_t n, size_t block_size, BSR*& bsr, bool verbose) {
     size_t number_of_blocks = n / block_size;
     size_t* block_row_ind = new size_t[number_of_blocks + 1];
     size_t* block_col_ind = new size_t[number_of_blocks + 1];
@@ -140,16 +132,14 @@ void reorder_HPSB(size_t* ia, size_t* ja, size_t n, size_t block_size, BlockCSR*
         std::cout << "HPSB_RowNet execution time: " << elapsed_time_hpsb.count() << " seconds." << std::endl;
     }
 
-    size_t* row_perm = new size_t[rows];
-    for (size_t i = 0; i < rows; i++) {
-        row_perm[i] = i;
-    }
-
-    create_BlockCSR(block_row_ind, block_col_ind, number_of_blocks, ia, ja, rows, cols, row_perm, col_perm, bcsr);
+    size_t* ia_new = nullptr;
+    size_t* ja_new = nullptr;
+    reorderCSR_Cols(ia, ja, rows, cols, col_perm, ia_new, ja_new);
+    create_BSR(ia_new, ja_new, rows, cols, block_size, bsr);
 
     if (verbose)
     {
-        double block_sparsity =  (double)(bcsr->num_blocks) / (number_of_blocks * number_of_blocks);
+        double block_sparsity =  (double)(bsr->num_blocks) / (number_of_blocks * number_of_blocks);
         std::cout << "Sparsity details after HPSB reordering: " << block_sparsity * 100 << "%" << std::endl;
     }
 
@@ -157,11 +147,10 @@ void reorder_HPSB(size_t* ia, size_t* ja, size_t n, size_t block_size, BlockCSR*
     delete[] block_col_ind;
 
     delete[] col_perm;
-    delete[] row_perm;
 
 }
 
-void reorder_HPNBM(size_t* ia, size_t* ja, size_t n, size_t block_size, BlockCSR*& bcsr, bool verbose) {
+void reorder_HPNBM(size_t* ia, size_t* ja, size_t n, size_t block_size, BSR*& bsr, bool verbose) {
     size_t number_of_blocks = n / block_size;
     size_t* block_row_ind = new size_t[number_of_blocks + 1];
     size_t* block_col_ind = new size_t[number_of_blocks + 1];
@@ -195,16 +184,14 @@ void reorder_HPNBM(size_t* ia, size_t* ja, size_t n, size_t block_size, BlockCSR
         std::cout << "HPSB_RowNet execution time: " << elapsed_time_hpnm.count() << " seconds." << std::endl;
     }
 
-    col_perm = new size_t[rows];
-    for (size_t i = 0; i < rows; i++) {
-        col_perm[i] = i;
-    }
-
-    create_BlockCSR(block_row_ind, block_col_ind, number_of_blocks, ia, ja, rows, cols, row_perm, col_perm, bcsr);
+    size_t* ia_new = nullptr;
+    size_t* ja_new = nullptr;
+    reorderCSR_Rows(ia, ja, rows, cols, row_perm, ia_new, ja_new);
+    create_BSR(ia_new, ja_new, rows, cols, block_size, bsr);
 
     if (verbose)
     {
-        double block_sparsity = (double)(bcsr->num_blocks) / (number_of_blocks * number_of_blocks);
+        double block_sparsity = (double)(bsr->num_blocks) / (number_of_blocks * number_of_blocks);
         std::cout << "Sparsity details after HPNBM reordering: " << block_sparsity * 100 << "%" << std::endl;
     }
 
@@ -214,7 +201,7 @@ void reorder_HPNBM(size_t* ia, size_t* ja, size_t n, size_t block_size, BlockCSR
     delete[] row_perm;
 }
 
-void reorder_HPNBM_PaToH(size_t* ia, size_t* ja, size_t n, size_t block_size, BlockCSR*& bcsr, bool verbose) {
+void reorder_HPNBM_PaToH(size_t* ia, size_t* ja, size_t n, size_t block_size, BSR*& bsr, bool verbose) {
     size_t number_of_blocks = n / block_size;
     size_t* block_row_ind = new size_t[number_of_blocks + 1];
     size_t* block_col_ind = new size_t[number_of_blocks + 1];
@@ -248,16 +235,15 @@ void reorder_HPNBM_PaToH(size_t* ia, size_t* ja, size_t n, size_t block_size, Bl
         std::cout << "HPSB_RowNet_Patoh execution time: " << elapsed_time_hpnm.count() << " seconds." << std::endl;
     }
 
-    col_perm = new size_t[rows];
-    for (size_t i = 0; i < rows; i++) {
-        col_perm[i] = i;
-    }
+    size_t* ia_new = nullptr;
+    size_t* ja_new = nullptr;
+    reorderCSR_Rows(ia, ja, rows, cols, row_perm, ia_new, ja_new);
 
-    create_BlockCSR(block_row_ind, block_col_ind, number_of_blocks, ia, ja, rows, cols, row_perm, col_perm, bcsr);
+    create_BSR(ia_new, ja_new, rows, cols, block_size, bsr);
 
     if (verbose)
     {
-        double block_sparsity = (double)(bcsr->num_blocks) / (number_of_blocks * number_of_blocks);
+        double block_sparsity = (double)(bsr->num_blocks) / (number_of_blocks * number_of_blocks);
         std::cout << "Sparsity details after HPNBM_Patoh reordering: " << block_sparsity * 100 << "%" << std::endl;
     }
 
@@ -267,7 +253,7 @@ void reorder_HPNBM_PaToH(size_t* ia, size_t* ja, size_t n, size_t block_size, Bl
     delete[] row_perm;
 }
 
-void reorder_HPRownet(size_t* ia, size_t* ja, size_t n, size_t block_size, BlockCSR*& bcsr, bool verbose) {
+void reorder_HPRownet(size_t* ia, size_t* ja, size_t n, size_t block_size, BSR*& bsr, bool verbose) {
     size_t number_of_blocks = n / block_size;
     size_t* block_row_ind = new size_t[number_of_blocks + 1];
     size_t* block_col_ind = new size_t[number_of_blocks + 1];
@@ -302,22 +288,21 @@ void reorder_HPRownet(size_t* ia, size_t* ja, size_t n, size_t block_size, Block
         std::cout << "HP_Rownet execution time: " << elapsed_time_hpnm.count() << " seconds." << std::endl;
     }
 
-    row_perm = new size_t[cols];
-    for (size_t i = 0; i < cols; i++) {
-        row_perm[i] = i;
-    }
+    size_t* ia_new = nullptr;
+    size_t* ja_new = nullptr;
+    reorderCSR_Cols(ia, ja, rows, cols, col_perm, ia_new, ja_new);
 
-    create_BlockCSR(block_row_ind, block_col_ind, number_of_blocks, ia, ja, rows, cols, row_perm, col_perm, bcsr);
+    create_BSR(ia_new, ja_new, rows, cols, block_size, bsr);
 
     if (verbose)
     {
-        double block_sparsity = (double)(bcsr->num_blocks) / (number_of_blocks * number_of_blocks);
+        double block_sparsity = (double)(bsr->num_blocks) / (number_of_blocks * number_of_blocks);
         std::cout << "Block sparsity after HP_Rownet: " << block_sparsity * 100 << "%" << std::endl;
     }
     
 }
 
-void reorder_RCM_HPNBM(size_t* ia, size_t* ja, size_t n, size_t block_size, BlockCSR*& bcsr, bool verbose) {
+void reorder_RCM_HPNBM(size_t* ia, size_t* ja, size_t n, size_t block_size, BSR*& bsr, bool verbose) {
     size_t number_of_blocks = n / block_size;
     size_t* block_row_ind = new size_t[number_of_blocks + 1];
     size_t* block_col_ind = new size_t[number_of_blocks + 1];
@@ -361,15 +346,14 @@ void reorder_RCM_HPNBM(size_t* ia, size_t* ja, size_t n, size_t block_size, Bloc
         std::cout << "RCM+HPNBM execution time: " << elapsed_time_hpnm.count() << " seconds." << std::endl;
     }
 
-    col_perm = new size_t[cols];
-    for (size_t i = 0; i < cols; i++) {
-        col_perm[i] = i;
-    }
-    create_BlockCSR(block_row_ind, block_col_ind, number_of_blocks, ia_reordered, ja_reordered, rows, cols, row_perm, col_perm, bcsr);
+    size_t* ia_new = nullptr;
+    size_t* ja_new = nullptr;
+    reorderCSR_Rows(ia_reordered, ja_reordered, rows, cols, row_perm, ia_new, ja_new);
+    create_BSR(ia_new, ja_new, rows, cols, block_size, bsr);
 
     if (verbose)
     {
-        double block_sparsity = (double)(bcsr->num_blocks) / (number_of_blocks * number_of_blocks);
+        double block_sparsity = (double)(bsr->num_blocks) / (number_of_blocks * number_of_blocks);
         std::cout << "Sparsity details after RCM+HPNBM reordering: " << block_sparsity * 100 << "%" << std::endl;
     }
 
@@ -380,7 +364,7 @@ void reorder_RCM_HPNBM(size_t* ia, size_t* ja, size_t n, size_t block_size, Bloc
 
 }
 
-void reorder_HPSB_HPNBM(size_t* ia, size_t* ja, size_t n, size_t block_size, BlockCSR*& bcsr, bool verbose) {
+void reorder_HPSB_HPNBM(size_t* ia, size_t* ja, size_t n, size_t block_size, BSR*& bsr, bool verbose) {
     size_t number_of_blocks = n / block_size;
     size_t* block_row_ind = new size_t[number_of_blocks + 1];
     size_t* block_col_ind = new size_t[number_of_blocks + 1];
@@ -424,28 +408,27 @@ void reorder_HPSB_HPNBM(size_t* ia, size_t* ja, size_t n, size_t block_size, Blo
         std::cout << "HPSB+HPNBM execution time: " << elapsed_time_hpnm.count() << " seconds." << std::endl;
     }
 
-    size_t* col_perm = new size_t[cols];
-    for (size_t i = 0; i < cols; i++) {
-        col_perm[i] = i;
-    }
-    create_BlockCSR(block_row_ind, block_col_ind, number_of_blocks, ia_reordered, ja_reordered, rows, cols, row_perm, col_perm, bcsr);
+    size_t* ia_new = nullptr;
+    size_t* ja_new = nullptr;
+    reorderCSR_Rows(ia_reordered, ja_reordered, rows, cols, row_perm, ia_new, ja_new);
+    create_BSR(ia_new, ja_new, rows, cols, block_size, bsr);
 
     if (verbose)
     {
-        double block_sparsity = (double)(bcsr->num_blocks) / (number_of_blocks * number_of_blocks);
+        double block_sparsity = (double)(bsr->num_blocks) / (number_of_blocks * number_of_blocks);
         std::cout << "Sparsity details after HPSB+HPNBM reordering: " << block_sparsity * 100 << "%" << std::endl;
     }
 
-    
+    delete[] ia_new;
+    delete[] ja_new;
 
     delete[] ia_reordered;
     delete[] ja_reordered;
     delete[] row_perm;
-    delete[] col_perm;
 
 }
 
-void reorder_HPRownet_HPNBM(size_t* ia, size_t* ja, size_t n, size_t block_size, BlockCSR*& bcsr, bool verbose) {
+void reorder_HPRownet_HPNBM(size_t* ia, size_t* ja, size_t n, size_t block_size, BSR*& bsr, bool verbose) {
     size_t number_of_blocks = n / block_size;
     size_t* block_row_ind = new size_t[number_of_blocks + 1];
     size_t* block_col_ind = new size_t[number_of_blocks + 1];
@@ -487,25 +470,24 @@ void reorder_HPRownet_HPNBM(size_t* ia, size_t* ja, size_t n, size_t block_size,
         std::cout << "HP+HPNBM execution time: " << elapsed_time_hpnm.count() << " seconds." << std::endl;
     }
 
-    size_t* col_perm = new size_t[cols];
-    for (size_t i = 0; i < cols; i++) {
-        col_perm[i] = i;
-    }
-    create_BlockCSR(block_row_ind, block_col_ind, number_of_blocks, ia_reordered, ja_reordered, rows, cols, row_perm, col_perm, bcsr);
+    size_t* ia_new = nullptr;
+    size_t* ja_new = nullptr;
+    reorderCSR_Rows(ia_reordered, ja_reordered, rows, cols, row_perm, ia_new, ja_new);
+    create_BSR(ia_new, ja_new, rows, cols, block_size, bsr);
 
     if (verbose)
     {
-        double block_sparsity = (double)(bcsr->num_blocks) / (number_of_blocks * number_of_blocks);
+        double block_sparsity = (double)(bsr->num_blocks) / (number_of_blocks * number_of_blocks);
         std::cout << "Sparsity details after HP+HPNBM reordering: " << block_sparsity * 100 << "%" << std::endl;
     }
 
     delete[] ia_reordered;
     delete[] ja_reordered;
     delete[] row_perm;
-    delete[] col_perm;
+
 }
 
-void reorder_TwoConstraint(size_t* ia, size_t* ja, size_t n, size_t block_size, BlockCSR*& bcsr, bool verbose) {
+void reorder_TwoConstraint(size_t* ia, size_t* ja, size_t n, size_t block_size, BSR*& bsr, bool verbose) {
     size_t number_of_blocks = n / block_size;
     size_t* block_row_ind = new size_t[number_of_blocks + 1];
     size_t* block_col_ind = new size_t[number_of_blocks + 1];
@@ -540,11 +522,14 @@ void reorder_TwoConstraint(size_t* ia, size_t* ja, size_t n, size_t block_size, 
         std::cout << "Two-Constraint HP execution time: " << elapsed_time_hpnm.count() << " seconds." << std::endl;
     }
 
-    create_BlockCSR(block_row_ind, block_col_ind, number_of_blocks, ia, ja, rows, cols, row_perm, col_perm, bcsr);
+    size_t* ia_new = nullptr;
+    size_t* ja_new = nullptr;
+    reorderCSR(ia, ja, rows, cols, row_perm, col_perm, ia_new, ja_new);
+    create_BSR(ia_new, ja_new, rows, cols, block_size, bsr);
 
     if (verbose)
     {
-        double block_sparsity = (double)(bcsr->num_blocks) / (number_of_blocks * number_of_blocks);
+        double block_sparsity = (double)(bsr->num_blocks) / (number_of_blocks * number_of_blocks);
         std::cout << "Sparsity details after Two-Constraint HP reordering: " << block_sparsity * 100 << "%" << std::endl;
     }
 

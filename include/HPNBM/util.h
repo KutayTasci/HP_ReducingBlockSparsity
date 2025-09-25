@@ -42,6 +42,18 @@ struct BlockCSR {
     size_t num_blocks;        // number of non-empty blocks
 };
 
+struct BSR {
+    size_t* block_offsets;      
+    size_t* block_col_ind;      
+    size_t block_size;
+    int* row_major_values;
+    size_t rows;
+    size_t cols;
+    size_t nnz;
+    size_t num_blocks;
+
+};
+
 void testBlockSparsity(size_t* block_row_ptr, size_t* block_col_ind, size_t num_blocks, size_t* ia, size_t* ja, size_t rows, size_t cols);
 
 void ReverseCuthillMcKee(size_t* ia, size_t* ja, size_t n, size_t*& perm);
@@ -51,6 +63,11 @@ void reorderCSR_Rows(size_t* ia, size_t* ja, size_t rows, size_t cols, size_t* r
 void reorderCSR_Cols(size_t* ia, size_t* ja, size_t rows, size_t cols, size_t* col_perm, size_t*& ia_new, size_t*& ja_new);
 
 void create_BlockCSR(size_t* block_row_ind, size_t* block_col_ind, size_t num_blocks, size_t* ia, size_t* ja, size_t rows, size_t cols, size_t* row_perm, size_t* column_perm, BlockCSR*& bcsr);
+void create_BSR(size_t* ia, size_t* ja, size_t rows, size_t cols, size_t block_size, BSR*& bsr);
 void analyzeBlockCSR(BlockCSR* bcsr);
+void analyzeBSR(BSR* bsr);
+
+void freeBlockCSR(BlockCSR* bcsr);
+void freeBSR(BSR* bsr);
 
 #endif

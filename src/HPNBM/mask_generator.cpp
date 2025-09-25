@@ -211,7 +211,6 @@ void generate_mask(
     if (segment_sizes != nullptr && dilation_sizes != nullptr) {
         TwoD_dilation(rows, cols, segment_sizes, dilation_sizes, mask_set);
     }
-    printf("Self connections added.\n");
     if (apply_causal) {
         remove_causal_connections(rows, cols, mask_set);
     }

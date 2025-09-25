@@ -379,6 +379,80 @@ void create_BlockCSR(size_t* block_row_ind, size_t* block_col_ind, size_t num_bl
 
 }
 
+void create_BSR(size_t* ia, size_t* ja, size_t rows, size_t cols, size_t block_size, BSR*& bsr) {
+    size_t i, j, k;
+
+    size_t num_block_rows = (rows + block_size - 1) / block_size;
+    size_t num_block_cols = (cols + block_size - 1) / block_size;
+
+    size_t* block_offsets = new size_t[num_block_rows + 1];
+    size_t num_blocks = 0;
+    block_offsets[0] = 0;
+    std::vector<size_t> block_col_indices_map;
+    for (i = 0; i < num_block_rows; ++i) {
+        size_t row_start = i * block_size;
+        size_t row_end = std::min(row_start + block_size, rows);
+        std::unordered_map<size_t, bool> block_cols_set;
+
+        for (j = row_start; j < row_end; ++j) {
+            for (size_t idx = ia[j]; idx < ia[j + 1]; ++idx) {
+                size_t col = ja[idx];
+                size_t block_col = col / block_size;
+                block_cols_set[block_col] = true;
+            }
+        }
+        num_blocks += block_cols_set.size();
+        block_offsets[i + 1] = block_offsets[i] + block_cols_set.size();
+        for (const auto& pair : block_cols_set) {
+            block_col_indices_map.push_back(pair.first);
+        }
+        
+    }
+    size_t* block_col_indices = block_col_indices_map.data();
+
+    int* row_major_values = new int[num_blocks * block_size * block_size];
+    for (i = 0; i < num_blocks * block_size * block_size; ++i) {
+        row_major_values[i] = 0;
+    }
+
+    // Fill in the BSR values with actual non-zero values from the original matrix
+    
+    for (i = 0; i < num_block_rows; ++i) {
+        size_t row_start = i * block_size;
+        size_t row_end = std::min(row_start + block_size, rows);
+        std::unordered_map<size_t, std::vector<size_t>> block_col_to_index;
+        for (j = row_start; j < row_end; ++j) {
+            for (size_t idx = ia[j]; idx < ia[j + 1]; ++idx) {
+                size_t col = ja[idx];
+                size_t block_col = col / block_size;
+                size_t local_row = j - row_start;
+                size_t local_col = col % block_size;
+                size_t index = local_row * block_size + local_col;
+                block_col_to_index[block_col].push_back(index);
+            }
+        }
+
+        size_t block_start = block_offsets[i];
+        size_t block_end = block_offsets[i + 1];
+        for (j = block_start; j < block_end; ++j) {
+            size_t block_col = block_col_indices[j];
+            for (const auto& index : block_col_to_index[block_col]) {
+                row_major_values[j * block_size * block_size + index] = 1; // Assuming non-zero value is 1
+            }
+        }
+
+    }
+    bsr = new BSR;
+    bsr->block_offsets = block_offsets;
+    bsr->block_col_ind = block_col_indices;
+    bsr->block_size = block_size;
+    bsr->row_major_values = row_major_values;
+    bsr->rows = rows;
+    bsr->cols = cols;
+    bsr->nnz = ia[rows];
+    bsr->num_blocks = num_blocks;
+}
+
 void analyzeBlockCSR(BlockCSR* bcsr) {
 
     size_t total_nnz = bcsr->ia[bcsr->block_indices[bcsr->num_blocks]];
@@ -441,6 +515,23 @@ void analyzeBlockCSR(BlockCSR* bcsr) {
     }
 }
 
+void analyzeBSR(BSR* bsr) {
+    size_t total_blocks = bsr->num_blocks;
+    size_t block_size = bsr->block_size;
+    size_t total_nnz = bsr->nnz;
+
+    double avg_nnz_per_block = (double)total_nnz / total_blocks;
+    double block_density = (double)total_nnz / (total_blocks * block_size * block_size);
+
+    //std::cout << "----------------------------------------" << std::endl;
+    std::cout << "BSR Analysis Results:" << std::endl;
+    std::cout << "Number of non-empty blocks: " << total_nnz << std::endl;
+    std::cout << "Average number of non-zeros per block: " << avg_nnz_per_block << std::endl;
+    std::cout << "Block sparsity (non-empty blocks / total blocks): " << (double)total_blocks / ((bsr->rows + block_size - 1) / block_size * (bsr->cols + block_size - 1) / block_size) * 100 << "%" << std::endl;
+
+    std::cout << "Block dimension: " << block_size << "x" << block_size << ":" << "-1 blocks" << std::endl;
+}
+
 void freeBlockCSR(BlockCSR& bcsr) {
     if (bcsr.block_indices) {
         delete[] bcsr.block_indices;
@@ -481,5 +572,20 @@ void freeBlockCSR(BlockCSR& bcsr) {
     if (bcsr.row_map) {
         delete[] bcsr.row_map;
         bcsr.row_map = nullptr;
+    }
+}
+
+void freeBSR(BSR& bsr) {
+    if (bsr.block_offsets) {
+        delete[] bsr.block_offsets;
+        bsr.block_offsets = nullptr;
+    }
+    if (bsr.block_col_ind) {
+        delete[] bsr.block_col_ind;
+        bsr.block_col_ind = nullptr;
+    }
+    if (bsr.row_major_values) {
+        delete[] bsr.row_major_values;
+        bsr.row_major_values = nullptr;
     }
 }
