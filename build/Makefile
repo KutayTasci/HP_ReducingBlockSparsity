@@ -225,6 +225,30 @@ src/HPNBM/mask_generator.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/TestHP.dir/build.make CMakeFiles/TestHP.dir/src/HPNBM/mask_generator.cpp.s
 .PHONY : src/HPNBM/mask_generator.cpp.s
 
+src/HPNBM/mm.o: src/HPNBM/mm.cpp.o
+.PHONY : src/HPNBM/mm.o
+
+# target to build an object file
+src/HPNBM/mm.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/TestHP.dir/build.make CMakeFiles/TestHP.dir/src/HPNBM/mm.cpp.o
+.PHONY : src/HPNBM/mm.cpp.o
+
+src/HPNBM/mm.i: src/HPNBM/mm.cpp.i
+.PHONY : src/HPNBM/mm.i
+
+# target to preprocess a source file
+src/HPNBM/mm.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/TestHP.dir/build.make CMakeFiles/TestHP.dir/src/HPNBM/mm.cpp.i
+.PHONY : src/HPNBM/mm.cpp.i
+
+src/HPNBM/mm.s: src/HPNBM/mm.cpp.s
+.PHONY : src/HPNBM/mm.s
+
+# target to generate assembly for a file
+src/HPNBM/mm.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/TestHP.dir/build.make CMakeFiles/TestHP.dir/src/HPNBM/mm.cpp.s
+.PHONY : src/HPNBM/mm.cpp.s
+
 src/HPNBM/reorder.o: src/HPNBM/reorder.cpp.o
 .PHONY : src/HPNBM/reorder.o
 
@@ -294,6 +318,9 @@ help:
 	@echo "... src/HPNBM/mask_generator.o"
 	@echo "... src/HPNBM/mask_generator.i"
 	@echo "... src/HPNBM/mask_generator.s"
+	@echo "... src/HPNBM/mm.o"
+	@echo "... src/HPNBM/mm.i"
+	@echo "... src/HPNBM/mm.s"
 	@echo "... src/HPNBM/reorder.o"
 	@echo "... src/HPNBM/reorder.i"
 	@echo "... src/HPNBM/reorder.s"
