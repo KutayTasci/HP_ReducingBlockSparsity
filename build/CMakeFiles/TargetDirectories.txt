@@ -1,3 +1,0 @@
-/home/kutay/Desktop/Research/HP_ReducingBlockSparsity/build/CMakeFiles/TestHP.dir
-/home/kutay/Desktop/Research/HP_ReducingBlockSparsity/build/CMakeFiles/edit_cache.dir
-/home/kutay/Desktop/Research/HP_ReducingBlockSparsity/build/CMakeFiles/rebuild_cache.dir
