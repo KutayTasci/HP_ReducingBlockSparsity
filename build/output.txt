@@ -43,3 +43,19 @@ Block dimension: 16x16:-1 blocks
 ========================
 Experimental results for Hypergraph_Partitioning_Nonzero_Block_Minimization
 ========================
+BSR Analysis Results:
+Number of non-empty blocks: 322307
+Average number of non-zeros per block: 1.4233
+Block sparsity (non-empty blocks / total blocks): 1.92066%
+Block dimension: 16x16:-1 blocks
+========================
+Experimental results for Hypergraph_Partitioning_Two_Constraint
+========================
+BSR Analysis Results:
+Number of non-empty blocks: 347563
+Average number of non-zeros per block: 1.31988
+Block sparsity (non-empty blocks / total blocks): 2.07116%
+Block dimension: 16x16:-1 blocks
+========================
+Experimental results for RCM + Hypergraph_Partitioning_Nonzero_Block_Minimization
+========================
