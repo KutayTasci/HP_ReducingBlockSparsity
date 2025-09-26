@@ -68,6 +68,6 @@ void analyzeBlockCSR(BlockCSR* bcsr);
 void analyzeBSR(BSR* bsr);
 
 void freeBlockCSR(BlockCSR* bcsr);
-void freeBSR(BSR* bsr);
+void freeBSR(BSR*& bsr);
 
 #endif

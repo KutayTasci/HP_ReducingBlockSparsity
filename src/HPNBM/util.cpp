@@ -525,7 +525,7 @@ void analyzeBSR(BSR* bsr) {
 
     //std::cout << "----------------------------------------" << std::endl;
     std::cout << "BSR Analysis Results:" << std::endl;
-    std::cout << "Number of non-empty blocks: " << total_nnz << std::endl;
+    std::cout << "Number of non-empty blocks: " << total_blocks << std::endl;
     std::cout << "Average number of non-zeros per block: " << avg_nnz_per_block << std::endl;
     std::cout << "Block sparsity (non-empty blocks / total blocks): " << (double)total_blocks / ((bsr->rows + block_size - 1) / block_size * (bsr->cols + block_size - 1) / block_size) * 100 << "%" << std::endl;
 
@@ -575,17 +575,16 @@ void freeBlockCSR(BlockCSR& bcsr) {
     }
 }
 
-void freeBSR(BSR& bsr) {
-    if (bsr.block_offsets) {
-        delete[] bsr.block_offsets;
-        bsr.block_offsets = nullptr;
+void freeBSR(BSR*& bsr) {
+    if (bsr->block_offsets) {
+        delete[] bsr->block_offsets;
+        bsr->block_offsets = nullptr;
     }
-    if (bsr.block_col_ind) {
-        delete[] bsr.block_col_ind;
-        bsr.block_col_ind = nullptr;
+    // Do NOT delete[] bsr->block_col_ind, as it points to memory managed by a std::vector
+    bsr->block_col_ind = nullptr;
+    if (bsr->row_major_values) {
+        delete[] bsr->row_major_values;
+        bsr->row_major_values = nullptr;
     }
-    if (bsr.row_major_values) {
-        delete[] bsr.row_major_values;
-        bsr.row_major_values = nullptr;
-    }
+    delete bsr;
 }

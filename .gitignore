@@ -37,5 +37,19 @@
 *.out
 *.app
 
-# debug information files
+# Debug information files
 *.dwo
+
+# Build directory
+build/
+
+# Excel files
+*.xlsx
+
+# Jupyter notebooks
+*.ipynb
+
+# Hidden editor / notebook directories
+.vscode/
+.ipynb_checkpoints/
+
