@@ -1,6 +1,7 @@
 #include "HPNBM/reorder.h"
 #include "HPNBM/util.h"
 #include "HPNBM/hp.h"
+#include "HPNBM/mm.h"
 
 
 #include <vector>
@@ -8,7 +9,18 @@
 #include <chrono>
 #include <iostream>
 #include <cstdlib> 
+#include <cstring>
 
+
+char* write_path = "./tmp/";
+
+void writeReorderedMatrix(size_t* ia, size_t* ja, size_t rows, size_t cols, const std::string& filename) {
+    std::string out_file = std::string(write_path) + filename;
+    char* out_file_cstr = new char[out_file.length() + 1];
+    std::strcpy(out_file_cstr, out_file.c_str());
+    csr2mm(ia, ja, rows, cols, out_file_cstr);
+    delete[] out_file_cstr;
+}
 
 void reorder_baseline(size_t* ia, size_t* ja, size_t n, size_t block_size, BSR*& bsr, bool verbose) {
     size_t number_of_blocks = n / block_size;
@@ -32,7 +44,7 @@ void reorder_baseline(size_t* ia, size_t* ja, size_t n, size_t block_size, BSR*&
         std::cout << "---------------------------------" << std::endl;
         testBlockSparsity(block_row_ind, block_col_ind, number_of_blocks, ia, ja, rows, cols);
     }
-
+    writeReorderedMatrix(ia, ja, rows, cols, "original_matrix.mtx");
 
     create_BSR(ia, ja, rows, cols, block_size, bsr);
 
@@ -85,6 +97,9 @@ void reorder_RCM(size_t* ia, size_t* ja, size_t n, size_t block_size, BSR*& bsr,
     size_t* ia_new = nullptr;
     size_t* ja_new = nullptr;
     reorderCSR(ia, ja, rows, cols, perm, perm, ia_new, ja_new);
+    
+    writeReorderedMatrix(ia_new, ja_new, rows, cols, "rcm_reordered.mtx");
+
     create_BSR(ia_new, ja_new, rows, cols, block_size, bsr);
 
     if (verbose)
@@ -136,6 +151,7 @@ void reorder_HPSB(size_t* ia, size_t* ja, size_t n, size_t block_size, BSR*& bsr
     size_t* ja_new = nullptr;
     reorderCSR_Cols(ia, ja, rows, cols, col_perm, ia_new, ja_new);
     create_BSR(ia_new, ja_new, rows, cols, block_size, bsr);
+    writeReorderedMatrix(ia_new, ja_new, rows, cols, "hpsb_reordered.mtx");
 
     if (verbose)
     {
@@ -189,6 +205,7 @@ void reorder_HPNBM(size_t* ia, size_t* ja, size_t n, size_t block_size, BSR*& bs
     reorderCSR_Rows(ia, ja, rows, cols, row_perm, ia_new, ja_new);
     create_BSR(ia_new, ja_new, rows, cols, block_size, bsr);
 
+    writeReorderedMatrix(ia_new, ja_new, rows, cols, "hpnbm_reordered.mtx");
     if (verbose)
     {
         double block_sparsity = (double)(bsr->num_blocks) / (number_of_blocks * number_of_blocks);
@@ -292,6 +309,8 @@ void reorder_HPRownet(size_t* ia, size_t* ja, size_t n, size_t block_size, BSR*&
     size_t* ja_new = nullptr;
     reorderCSR_Cols(ia, ja, rows, cols, col_perm, ia_new, ja_new);
 
+    writeReorderedMatrix(ia_new, ja_new, rows, cols, "hprownet_reordered.mtx");
+
     create_BSR(ia_new, ja_new, rows, cols, block_size, bsr);
 
     if (verbose)
@@ -350,6 +369,8 @@ void reorder_RCM_HPNBM(size_t* ia, size_t* ja, size_t n, size_t block_size, BSR*
     size_t* ja_new = nullptr;
     reorderCSR_Rows(ia_reordered, ja_reordered, rows, cols, row_perm, ia_new, ja_new);
     create_BSR(ia_new, ja_new, rows, cols, block_size, bsr);
+
+    writeReorderedMatrix(ia_new, ja_new, rows, cols, "rcm_hpnbm_reordered.mtx");
 
     if (verbose)
     {
@@ -412,7 +433,7 @@ void reorder_HPSB_HPNBM(size_t* ia, size_t* ja, size_t n, size_t block_size, BSR
     size_t* ja_new = nullptr;
     reorderCSR_Rows(ia_reordered, ja_reordered, rows, cols, row_perm, ia_new, ja_new);
     create_BSR(ia_new, ja_new, rows, cols, block_size, bsr);
-
+    writeReorderedMatrix(ia_new, ja_new, rows, cols, "hpsb_hpnbm_reordered.mtx");
     if (verbose)
     {
         double block_sparsity = (double)(bsr->num_blocks) / (number_of_blocks * number_of_blocks);
@@ -474,7 +495,7 @@ void reorder_HPRownet_HPNBM(size_t* ia, size_t* ja, size_t n, size_t block_size,
     size_t* ja_new = nullptr;
     reorderCSR_Rows(ia_reordered, ja_reordered, rows, cols, row_perm, ia_new, ja_new);
     create_BSR(ia_new, ja_new, rows, cols, block_size, bsr);
-
+    writeReorderedMatrix(ia_new, ja_new, rows, cols, "hp_hpnbm_reordered.mtx");
     if (verbose)
     {
         double block_sparsity = (double)(bsr->num_blocks) / (number_of_blocks * number_of_blocks);
@@ -526,7 +547,7 @@ void reorder_TwoConstraint(size_t* ia, size_t* ja, size_t n, size_t block_size, 
     size_t* ja_new = nullptr;
     reorderCSR(ia, ja, rows, cols, row_perm, col_perm, ia_new, ja_new);
     create_BSR(ia_new, ja_new, rows, cols, block_size, bsr);
-
+    writeReorderedMatrix(ia_new, ja_new, rows, cols, "two_constraint_hp_reordered.mtx");
     if (verbose)
     {
         double block_sparsity = (double)(bsr->num_blocks) / (number_of_blocks * number_of_blocks);

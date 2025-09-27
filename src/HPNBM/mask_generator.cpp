@@ -1,6 +1,6 @@
 #include "HPNBM/mask_generator.h"
 
-#include <vector>
+
 #include <random>
 #include <set>
 #include <iostream>
@@ -119,16 +119,17 @@ void remove_causal_connections(size_t rows, size_t cols, std::set<std::pair<size
     }
 }
 
-void TwoD_dilation(size_t rows, size_t cols, size_t* segment_sizes, size_t* dilation_sizes, std::set<std::pair<size_t, size_t>>& mask_set) {
-    if (segment_sizes == nullptr || dilation_sizes == nullptr) return;
-    int size_segment = std::log2(rows) - 2;
-    int size_dilation = std::log2(rows)- 2;
+void TwoD_dilation(size_t rows, size_t cols, std::vector<size_t> segment_sizes, std::vector<size_t> dilation_sizes, std::set<std::pair<size_t, size_t>>& mask_set) {
+    if (segment_sizes.empty() || dilation_sizes.empty()) return;
+    size_t size_segment = segment_sizes.size();
+    size_t size_dilation = dilation_sizes.size();
+    printf("Size segment: %zu, Size dilation: %zu\n", size_segment, size_dilation);
 
     if (rows != cols) return;
     int n = rows;
 
     if (size_segment != size_dilation) return;
-
+    int ctr = 0;
     // iterate trough segment sizes
     for (int seg = 0; seg < size_segment; ++seg) {
         int segment_size = segment_sizes[seg];
@@ -139,11 +140,13 @@ void TwoD_dilation(size_t rows, size_t cols, size_t* segment_sizes, size_t* dila
                     std::pair<size_t, size_t> rc;
                     rc.first = i;
                     rc.second = j;
-                    mask_set.insert(rc);
+                    mask_set.insert({i, j});
+                    ctr++;
                 }
             }
         }
     }
+    
 }
 
 void convert_mask_to_csr(size_t rows, size_t cols, const std::set<std::pair<size_t, size_t>>& mask_set, size_t*& ia, size_t*& ja) {
@@ -178,8 +181,8 @@ void generate_mask(
     int sliding_window, 
     int dilation, 
     int random_per_row, 
-    size_t* segment_sizes, 
-    size_t* dilation_sizes,
+    std::vector<size_t> segment_sizes, 
+    std::vector<size_t> dilation_sizes,
     bool apply_causal, 
     size_t*& ia, 
     size_t*& ja
@@ -207,8 +210,8 @@ void generate_mask(
     if (random_per_row > 0) {
         random_connections(rows, cols, random_per_row, mask_set);
     }
-    
-    if (segment_sizes != nullptr && dilation_sizes != nullptr) {
+
+    if (!segment_sizes.empty() && !dilation_sizes.empty()) {
         TwoD_dilation(rows, cols, segment_sizes, dilation_sizes, mask_set);
     }
     if (apply_causal) {

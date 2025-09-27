@@ -15,7 +15,7 @@
 
 
 
-
+extern char* write_path;
 
 void printCSR(size_t* ia, size_t* ja, size_t rows) {
     // Output the generated CSR arrays 
@@ -152,9 +152,9 @@ void run_experiments() {
     bool HPSB_HPNBM = true;
     bool HPRownet_HPNBM = true;
 
-    int num_experiments = 10;
+    int num_experiments = 1;
 
-    size_t list_of_number_of_blocks[] = {4096}; //1024, 4096, 16384, 65536, 2048, 4096};
+    size_t list_of_number_of_blocks[] = {1024}; //1024, 4096, 16384, 65536, 2048, 4096};
     for (size_t number_of_blocks : list_of_number_of_blocks) {
         size_t block_size = 16;
         size_t rows = number_of_blocks * block_size;
@@ -163,6 +163,8 @@ void run_experiments() {
         std::cout << "Running experiments for matrix size: " << rows << " x " << cols << std::endl;
         std::cout << "========================" << std::endl;
         for (int exp = 0; exp < num_experiments; ++exp) {
+            // write as char array
+            write_path = "./tmp/";
             printf("Experiment %d of %d\n", exp + 1, num_experiments);
             std::cout << "========================" << std::endl;
             std::cout << "Experiment " << (exp + 1) << " of " << num_experiments << std::endl;
@@ -171,22 +173,20 @@ void run_experiments() {
             size_t* ia = nullptr;
             size_t* ja = nullptr;
             int seg_len = std::log2(rows) - 2;
-            size_t* segment_sizes = new size_t[seg_len];
-            size_t* dilation_sizes = new size_t[seg_len];
+            std::vector<size_t> segment_sizes(seg_len);
+            std::vector<size_t> dilation_sizes(seg_len);
 
             for (int i = 0; i < seg_len; ++i) {
                 segment_sizes[i] = std::pow(2, i+2);
                 dilation_sizes[i] = std::pow(2, i);
             }
-            double sparsity = 0.0001;
+            double sparsity = 0.04;
             int external_global = 0; //std::log2(rows);
             int internal_global = 0; //std::log2(rows);
             int sliding_window = 0 ; //std::log2(rows);
             int sliding_dilation = 0;
-            int random_per_row = sparsity * cols ; //std::log2(rows);
+            int random_per_row = 0 ; //sparsity * cols ; //std::log2(rows);
             bool causal = false;
-            segment_sizes = nullptr;
-            dilation_sizes = nullptr;
             generate_mask(rows, cols, external_global, internal_global, sliding_window, sliding_dilation, random_per_row, segment_sizes, dilation_sizes, causal, ia, ja);
 
             std::cout << "========================" << std::endl;
@@ -195,8 +195,8 @@ void run_experiments() {
             //clean up
             free(ia);
             free(ja);
-            delete[] segment_sizes;
-            delete[] dilation_sizes;
+            segment_sizes.clear();
+            dilation_sizes.clear();
         }
     }
 }
@@ -223,6 +223,10 @@ void run_with_mm(char* filename) {
     freemm(mm);
     free(ia);
     free(ja);
+}
+
+void reorder_and_save() {
+
 }
 
 int main(int argc, char* argv[]) {
