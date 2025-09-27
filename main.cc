@@ -165,6 +165,9 @@ void run_experiments() {
         for (int exp = 0; exp < num_experiments; ++exp) {
             // write as char array
             write_path = "./tmp/";
+            // create directory if it does not exist
+            std::string command = "mkdir -p " + std::string(write_path);
+            system(command.c_str());
             printf("Experiment %d of %d\n", exp + 1, num_experiments);
             std::cout << "========================" << std::endl;
             std::cout << "Experiment " << (exp + 1) << " of " << num_experiments << std::endl;
