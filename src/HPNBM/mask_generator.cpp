@@ -194,7 +194,7 @@ void generate_mask(
     std::uniform_int_distribution<size_t> distribution(0, cols - 1);
 
     add_self_connections(rows, cols, mask_set);
-    
+
     if (external_global > 0) {
         external_global_connections(rows, cols, external_global, mask_set);
     }
@@ -211,6 +211,7 @@ void generate_mask(
         random_connections(rows, cols, random_per_row, mask_set);
     }
 
+    printf("Applying 2D dilation with %zu segment sizes and %zu dilation sizes.\n", segment_sizes.size(), dilation_sizes.size());
     if (!segment_sizes.empty() && !dilation_sizes.empty()) {
         TwoD_dilation(rows, cols, segment_sizes, dilation_sizes, mask_set);
     }

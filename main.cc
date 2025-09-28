@@ -15,7 +15,7 @@
 
 
 
-extern char* write_path;
+extern std::string write_path;
 
 void printCSR(size_t* ia, size_t* ja, size_t rows) {
     // Output the generated CSR arrays 
@@ -132,17 +132,37 @@ void run_experiments(bool RCM, bool HPRownet, bool HPSB, bool HPNBM, bool TwoCon
     }
 }
 
-void run_experiments() {  
+void run_experiments(int no_ofblocks, double sparsity, int seg_start=2) {  
+    // ====== User Configurable Parameters ======
+    // Set the experiment parameters here
+    std::string folder_for_current_run = "/scratch/pioneer/users/kxt437/Dilated2D_FSeg" + std::to_string((int) std::pow(2, seg_start)) + "_N" + std::to_string(no_ofblocks) + "_Causal"+ "/";
+    // std::to_string((int) std::pow(2, seg_start))  std::to_string(sparsity)
+    // Bigbird_FSeg
 
-    // Save the original cout buffer
-    std::streambuf* original_cout_buffer = std::cout.rdbuf();
 
-    // Create an output file stream
-    std::ofstream file_out("output.txt");
+    size_t block_size = 16;
+    bool causal = true;
+    int num_experiments = 10;
+    std::vector<size_t> list_of_number_of_blocks = {(size_t)no_ofblocks}; // e.g., {1024, 2048, 4096, 8192, 16384, 32768, 65536}
 
-    // Redirect cout to the file stream
-    std::cout.rdbuf(file_out.rdbuf());
- 
+    int big_bird_blocks = ((no_ofblocks * block_size) * sparsity) / 8;
+    // Mask generation parameters (set to 0 or fill as needed)
+    int external_global = 0;//2 * big_bird_blocks; // e.g., 2 * big_bird_blocks
+    int internal_global = 0;
+    int sliding_window = 0;//3 * big_bird_blocks; // e.g., 3 * big_bird_blocks
+    int sliding_dilation = 0;
+    int random_per_row = 0; //3 * big_bird_blocks; // will be set below
+    std::vector<size_t> segment_sizes = {}; // e.g., {4, 8, 16}
+    std::vector<size_t> dilation_sizes = {}; // e.g., {1, 2, 4}
+
+    for (int seg = seg_start; seg < static_cast<int>(std::log2(block_size * no_ofblocks)); ++seg) {
+        segment_sizes.push_back(static_cast<size_t>(std::pow(2, seg)));
+        dilation_sizes.push_back(static_cast<size_t>(std::pow(2, seg - seg_start)));
+    }
+    //segment_sizes = {};
+    //dilation_sizes = {};
+    
+    // Which experiments to run
     bool RCM = true;
     bool HPRownet = true;
     bool HPSB = true;
@@ -151,57 +171,58 @@ void run_experiments() {
     bool RCM_HPNBM = true;
     bool HPSB_HPNBM = true;
     bool HPRownet_HPNBM = true;
+    // ==========================================
 
-    int num_experiments = 1;
+    // Save the original cout buffer
+    std::streambuf* original_cout_buffer = std::cout.rdbuf();
 
-    size_t list_of_number_of_blocks[] = {1024}; //1024, 4096, 16384, 65536, 2048, 4096};
+    // Create output folder
+    std::string command = "mkdir -p " + folder_for_current_run;
+    system(command.c_str());
+
     for (size_t number_of_blocks : list_of_number_of_blocks) {
-        size_t block_size = 16;
+        std::string output_filename = folder_for_current_run + "/" + std::to_string(number_of_blocks) + "_blocks.txt";
+        std::ofstream file_out(output_filename);
+        std::cout.rdbuf(file_out.rdbuf());
+
         size_t rows = number_of_blocks * block_size;
         size_t cols = number_of_blocks * block_size;
         std::cout << "========================" << std::endl;
         std::cout << "Running experiments for matrix size: " << rows << " x " << cols << std::endl;
         std::cout << "========================" << std::endl;
+
         for (int exp = 0; exp < num_experiments; ++exp) {
-            // write as char array
-            write_path = "./tmp/";
-            // create directory if it does not exist
-            std::string command = "mkdir -p " + std::string(write_path);
+            std::string folder_for_current_experiment = folder_for_current_run + "/Exp" + std::to_string(exp) + "/";
+            write_path = folder_for_current_experiment;
+            std::string command = "mkdir -p " + write_path;
             system(command.c_str());
+            set_write_path(write_path);
+
             printf("Experiment %d of %d\n", exp + 1, num_experiments);
             std::cout << "========================" << std::endl;
             std::cout << "Experiment " << (exp + 1) << " of " << num_experiments << std::endl;
             std::cout << "Matrix size: " << rows << " x " << cols << std::endl;
             std::cout << "Block size: " << block_size << " x " << block_size << std::endl;
+
             size_t* ia = nullptr;
             size_t* ja = nullptr;
-            int seg_len = std::log2(rows) - 2;
-            std::vector<size_t> segment_sizes(seg_len);
-            std::vector<size_t> dilation_sizes(seg_len);
 
-            for (int i = 0; i < seg_len; ++i) {
-                segment_sizes[i] = std::pow(2, i+2);
-                dilation_sizes[i] = std::pow(2, i);
-            }
-            double sparsity = 0.04;
-            int external_global = 0; //std::log2(rows);
-            int internal_global = 0; //std::log2(rows);
-            int sliding_window = 0 ; //std::log2(rows);
-            int sliding_dilation = 0;
-            int random_per_row = 0 ; //sparsity * cols ; //std::log2(rows);
-            bool causal = false;
+            // Set random_per_row based on sparsity and cols
+            //random_per_row = static_cast<int>(sparsity * cols);
+
+            // Generate mask
             generate_mask(rows, cols, external_global, internal_global, sliding_window, sliding_dilation, random_per_row, segment_sizes, dilation_sizes, causal, ia, ja);
 
             std::cout << "========================" << std::endl;
-            
             run_experiments(RCM, HPRownet, HPSB, HPNBM, TwoConstraint, RCM_HPNBM, HPSB_HPNBM, HPRownet_HPNBM, ia, ja, rows, block_size);
-            //clean up
+
             free(ia);
             free(ja);
-            segment_sizes.clear();
-            dilation_sizes.clear();
         }
     }
+
+    // Restore cout buffer
+    std::cout.rdbuf(original_cout_buffer);
 }
 
 void run_with_mm(char* filename) {
@@ -235,7 +256,10 @@ void reorder_and_save() {
 int main(int argc, char* argv[]) {
 
     // Run experiments
-    run_experiments();
+    int no_ofblocks = argc > 1 ? std::stoi(argv[1]) : 4096;
+    double sparsity = argc > 2 ? std::stod(argv[2]) : 0.1;
+    int seg_start = argc > 3 ? std::stoi(argv[3]) : 2;
+    run_experiments(no_ofblocks, sparsity, seg_start);
 
     //run_with_mm("../sparse_matrix_groot.mtx");
 

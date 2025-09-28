@@ -4,7 +4,7 @@
 #include <cstddef>
 #include "HPNBM/util.h"
 
-
+void set_write_path(const std::string& path);
 void reorder_baseline(size_t* ia, size_t* ja, size_t n, size_t block_size, BSR*& bsr, bool verbose=false);
 
 /**
