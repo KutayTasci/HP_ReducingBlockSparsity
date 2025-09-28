@@ -59,7 +59,8 @@ void HPSB_RowNet_t(
 
     // Initialize mt-kahypar
     mt_kahypar_initialize(std::thread::hardware_concurrency(), true);
-
+    // Print the number of available threads
+    //printf("Using %d threads for mt-kahypar.\n", std::thread::hardware_concurrency());
     // Hypergraph construction
     const mt_kahypar_hypernode_id_t num_nodes = cols;
     const mt_kahypar_hyperedge_id_t num_hyperedges = rows;

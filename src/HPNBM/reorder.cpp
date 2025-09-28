@@ -12,14 +12,19 @@
 #include <cstring>
 
 
-char* write_path = "./tmp/";
+std::string write_path = "./tmp/";
+
+void set_write_path(const std::string& path) {
+    write_path = path;
+}
 
 void writeReorderedMatrix(size_t* ia, size_t* ja, size_t rows, size_t cols, const std::string& filename) {
-    std::string out_file = std::string(write_path) + filename;
-    char* out_file_cstr = new char[out_file.length() + 1];
-    std::strcpy(out_file_cstr, out_file.c_str());
-    csr2mm(ia, ja, rows, cols, out_file_cstr);
-    delete[] out_file_cstr;
+    std::string out_file = write_path + filename;
+    std::cout << "Writing reordered matrix to: " << out_file << std::endl;
+    char * cstr = new char[out_file.length() + 1];
+    std::strcpy(cstr, out_file.c_str());
+    csr2mm(ia, ja, rows, cols, cstr);
+    delete[] cstr;
 }
 
 void reorder_baseline(size_t* ia, size_t* ja, size_t n, size_t block_size, BSR*& bsr, bool verbose) {
@@ -44,6 +49,7 @@ void reorder_baseline(size_t* ia, size_t* ja, size_t n, size_t block_size, BSR*&
         std::cout << "---------------------------------" << std::endl;
         testBlockSparsity(block_row_ind, block_col_ind, number_of_blocks, ia, ja, rows, cols);
     }
+    std::cout << "No reordering applied." << std::endl;
     writeReorderedMatrix(ia, ja, rows, cols, "original_matrix.mtx");
 
     create_BSR(ia, ja, rows, cols, block_size, bsr);
@@ -56,6 +62,7 @@ void reorder_baseline(size_t* ia, size_t* ja, size_t n, size_t block_size, BSR*&
 
     delete[] block_row_ind;
     delete[] block_col_ind;
+
 
 }
 
@@ -113,6 +120,9 @@ void reorder_RCM(size_t* ia, size_t* ja, size_t n, size_t block_size, BSR*& bsr,
     delete[] block_col_ind;
     delete[] perm;
 
+    delete[] ia_new;
+    delete[] ja_new;
+
 }
 
 void reorder_HPSB(size_t* ia, size_t* ja, size_t n, size_t block_size, BSR*& bsr, bool verbose) {
@@ -168,6 +178,8 @@ void reorder_HPSB(size_t* ia, size_t* ja, size_t n, size_t block_size, BSR*& bsr
     delete[] block_col_ind;
 
     delete[] col_perm;
+    delete[] ia_new;
+    delete[] ja_new;
 
 }
 
@@ -221,6 +233,8 @@ void reorder_HPNBM(size_t* ia, size_t* ja, size_t n, size_t block_size, BSR*& bs
     delete[] block_col_ind;
     delete[] col_perm;
     delete[] row_perm;
+    delete[] ia_new;
+    delete[] ja_new;
 }
 
 void reorder_HPNBM_PaToH(size_t* ia, size_t* ja, size_t n, size_t block_size, BSR*& bsr, bool verbose) {
@@ -273,6 +287,8 @@ void reorder_HPNBM_PaToH(size_t* ia, size_t* ja, size_t n, size_t block_size, BS
     delete[] block_col_ind;
     delete[] col_perm;
     delete[] row_perm;
+    delete[] ia_new;
+    delete[] ja_new;
 }
 
 void reorder_HPRownet(size_t* ia, size_t* ja, size_t n, size_t block_size, BSR*& bsr, bool verbose) {
@@ -323,6 +339,13 @@ void reorder_HPRownet(size_t* ia, size_t* ja, size_t n, size_t block_size, BSR*&
         double block_sparsity = (double)(bsr->num_blocks) / (number_of_blocks * number_of_blocks);
         std::cout << "Block sparsity after HP_Rownet: " << block_sparsity * 100 << "%" << std::endl;
     }
+
+    delete[] block_row_ind;
+    delete[] block_col_ind;
+    delete[] col_perm;
+    delete[] row_perm;
+    delete[] ia_new;
+    delete[] ja_new;
     
 }
 
@@ -387,6 +410,10 @@ void reorder_RCM_HPNBM(size_t* ia, size_t* ja, size_t n, size_t block_size, BSR*
     delete[] ja_reordered;
     delete[] row_perm;
     delete[] col_perm;
+    delete[] block_row_ind;
+    delete[] block_col_ind;
+    delete[] ia_new;
+    delete[] ja_new;
 
 }
 
@@ -511,6 +538,11 @@ void reorder_HPRownet_HPNBM(size_t* ia, size_t* ja, size_t n, size_t block_size,
     delete[] ia_reordered;
     delete[] ja_reordered;
     delete[] row_perm;
+    delete[] col_perm_hp;
+    delete[] block_row_ind;
+    delete[] block_col_ind;
+    delete[] ia_new;
+    delete[] ja_new;
 
 }
 
@@ -559,5 +591,12 @@ void reorder_TwoConstraint(size_t* ia, size_t* ja, size_t n, size_t block_size, 
         double block_sparsity = (double)(bsr->num_blocks) / (number_of_blocks * number_of_blocks);
         std::cout << "Sparsity details after Two-Constraint HP reordering: " << block_sparsity * 100 << "%" << std::endl;
     }
+
+    delete[] block_row_ind;
+    delete[] block_col_ind;
+    delete[] col_perm;
+    delete[] row_perm;
+    delete[] ia_new;
+    delete[] ja_new;
 
 }
