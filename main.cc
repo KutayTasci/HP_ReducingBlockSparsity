@@ -143,14 +143,14 @@ void run_experiments() {
     // Redirect cout to the file stream
     std::cout.rdbuf(file_out.rdbuf());
  
-    bool RCM = true;
-    bool HPRownet = true;
+    bool RCM = false;
+    bool HPRownet = false;
     bool HPSB = true;
-    bool HPNBM = true;
-    bool TwoConstraint = true;
-    bool RCM_HPNBM = true;
+    bool HPNBM = false;
+    bool TwoConstraint = false;
+    bool RCM_HPNBM = false;
     bool HPSB_HPNBM = true;
-    bool HPRownet_HPNBM = true;
+    bool HPRownet_HPNBM = false;
 
     int num_experiments = 1;
 
@@ -183,13 +183,15 @@ void run_experiments() {
                 segment_sizes[i] = std::pow(2, i+2);
                 dilation_sizes[i] = std::pow(2, i);
             }
-            double sparsity = 0.04;
+            segment_sizes = {};
+            dilation_sizes = {};
+            double sparsity = 0.001;
             int external_global = 0; //std::log2(rows);
             int internal_global = 0; //std::log2(rows);
-            int sliding_window = 0 ; //std::log2(rows);
+            int sliding_window = 4 ; //std::log2(rows);
             int sliding_dilation = 0;
-            int random_per_row = 0 ; //sparsity * cols ; //std::log2(rows);
-            bool causal = false;
+            int random_per_row = 3; //sparsity * cols ; //std::log2(rows);
+            bool causal = true;
             generate_mask(rows, cols, external_global, internal_global, sliding_window, sliding_dilation, random_per_row, segment_sizes, dilation_sizes, causal, ia, ja);
 
             std::cout << "========================" << std::endl;

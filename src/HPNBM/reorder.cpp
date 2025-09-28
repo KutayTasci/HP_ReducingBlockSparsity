@@ -138,8 +138,10 @@ void reorder_HPSB(size_t* ia, size_t* ja, size_t n, size_t block_size, BSR*& bsr
     }
 
     size_t* col_perm = nullptr;
+    size_t* row_perm = nullptr;
+    printf("Starting HPSB_RowNet...\n");
     std::chrono::system_clock::time_point start_time_hpsb = std::chrono::system_clock::now();
-    HPSB_RowNet(ia, ja, rows, cols, number_of_blocks, col_perm);
+    HPSB_RowNet(ia, ja, rows, cols, number_of_blocks, row_perm, col_perm);
 
     std::chrono::system_clock::time_point end_time_hpsb = std::chrono::system_clock::now();
     std::chrono::duration<double> elapsed_time_hpsb = end_time_hpsb - start_time_hpsb;
@@ -149,8 +151,11 @@ void reorder_HPSB(size_t* ia, size_t* ja, size_t n, size_t block_size, BSR*& bsr
 
     size_t* ia_new = nullptr;
     size_t* ja_new = nullptr;
-    reorderCSR_Cols(ia, ja, rows, cols, col_perm, ia_new, ja_new);
+    
+    reorderCSR(ia, ja, rows, cols, row_perm, col_perm, ia_new, ja_new);
+    
     create_BSR(ia_new, ja_new, rows, cols, block_size, bsr);
+    
     writeReorderedMatrix(ia_new, ja_new, rows, cols, "hpsb_reordered.mtx");
 
     if (verbose)
@@ -409,14 +414,15 @@ void reorder_HPSB_HPNBM(size_t* ia, size_t* ja, size_t n, size_t block_size, BSR
     }
 
     size_t* col_perm_hpsb = nullptr;
+    size_t* row_perm_hpsb = nullptr;
     std::chrono::system_clock::time_point start_time_hpsb = std::chrono::system_clock::now();
-    HPSB_RowNet(ia, ja, rows, cols, number_of_blocks, col_perm_hpsb);
+    HPSB_RowNet(ia, ja, rows, cols, number_of_blocks, row_perm_hpsb, col_perm_hpsb);
 
 
     size_t* ia_reordered = nullptr;
     size_t* ja_reordered = nullptr;
 
-    reorderCSR_Cols(ia, ja, rows, cols, col_perm_hpsb, ia_reordered, ja_reordered);
+    reorderCSR(ia, ja, rows, cols, row_perm_hpsb, col_perm_hpsb, ia_reordered, ja_reordered);
 
 
     size_t* row_perm = nullptr;

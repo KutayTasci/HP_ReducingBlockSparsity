@@ -40,7 +40,7 @@
  * - If input arrays are invalid or out-of-bounds indices are detected, the function prints an error and returns early.
  * - The function may terminate the program if mt-kahypar fails to construct or partition the hypergraph.
  */
-void HPSB_RowNet(
+void HPSB_RowNet_t(
     size_t* ia,
     size_t* ja,
     size_t rows,
@@ -557,25 +557,23 @@ void HPNBM_Patoh(
 }
 
 
-void HP_Colnet(
+void HPSB_RowNet(
     size_t* ia, 
     size_t* ja, 
     size_t rows, 
     size_t cols, 
-    size_t num_parts, 
-    size_t block_size, 
-    size_t*& perm, 
-    size_t*& block_row_ptr, 
-    size_t*& block_col_ptr
+    size_t num_parts,
+    size_t*& row_part,
+    size_t*& col_part
 ) {
     if (cols == 0 || ia[rows] == 0) {
         std::cerr << "Error: Zero-sized allocation detected." << std::endl;
         return;
     }
-    //Maybe to implemented in the future
-    /*
+
     mt_kahypar_error_t error{};
     col_part = new size_t[cols];
+    row_part = new size_t[rows];
 
     // Initialize mt-kahypar
     mt_kahypar_initialize(std::thread::hardware_concurrency(), true);
@@ -624,7 +622,7 @@ void HP_Colnet(
     std::fill(net_weights.get(), net_weights.get() + num_hyperedges, 1);
 
     // Create context and hypergraph
-    mt_kahypar_context_t* context = mt_kahypar_context_from_preset(DEFAULT);
+    mt_kahypar_context_t* context = mt_kahypar_context_from_preset(LARGE_K);
     mt_kahypar_hypergraph_t hypergraph = mt_kahypar_create_hypergraph(
         context, num_nodes, num_hyperedges,
         net_indices.get(), nets.get(),
@@ -651,7 +649,53 @@ void HP_Colnet(
     // Extract partition
     std::unique_ptr<mt_kahypar_partition_id_t[]> partition = std::make_unique<mt_kahypar_partition_id_t[]>(num_nodes);
     mt_kahypar_get_partition(partitioned_hg, partition.get());
-    */
+    
+    std::unique_ptr<size_t[]> part_sizes = std::make_unique<size_t[]>(num_parts + 2);
+    std::fill(part_sizes.get(), part_sizes.get() + num_parts + 2, 0);
+    std::unique_ptr<size_t[]> temp_part = std::make_unique<size_t[]>(cols);
+    for (size_t i = 0; i < cols; ++i) {
+        if (mt_kahypar_connectivity(partitioned_hg, i) > 1) {
+            part_sizes[num_parts + 1]++;
+        } else {
+            mt_kahypar_hypernode_id_t* tmp = new mt_kahypar_hypernode_id_t[mt_kahypar_hyperedge_size(hypergraph, i)];
+            mt_kahypar_get_hyperedge_pins(hypergraph, i, tmp);
+            temp_part[i] = partition[tmp[0]];
+            part_sizes[partition[i] + 1]++;
+        }
+    }
+    for (size_t i = 1; i <= num_parts + 1; ++i) {
+        part_sizes[i] += part_sizes[i - 1];
+    }
+
+    for (size_t i = 0; i < cols; ++i) {
+        if (mt_kahypar_connectivity(partitioned_hg, i) > 1) {
+            col_part[part_sizes[num_parts]] = i;
+            part_sizes[num_parts]++;
+            continue;
+        }
+        int part = temp_part[i];
+        col_part[part_sizes[part]] = i;
+        part_sizes[part]++;
+    }
+
+    std::fill(part_sizes.get(), part_sizes.get() + num_parts + 1, 0);
+    for (size_t i = 0; i < rows; ++i) {
+        part_sizes[partition[i] + 1]++;
+    }
+    for (size_t i = 1; i <= num_parts; i++) {
+        part_sizes[i] += part_sizes[i - 1];
+    }
+    for (size_t i = 0; i < rows; ++i) {
+        int part = partition[i];
+        row_part[part_sizes[part]] = i;
+        part_sizes[part]++;
+    }
+
+    // Cleanup
+    mt_kahypar_free_context(context);
+    mt_kahypar_free_hypergraph(hypergraph);
+    mt_kahypar_free_partitioned_hypergraph(partitioned_hg);
+
 }
 
 void HP_Rownet(
