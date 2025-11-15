@@ -5,6 +5,7 @@
 #include <cmath>
 #include <fstream>
 #include <streambuf> // Required for std::streambuf
+#include <cstring>   // Required for std::strcpy
 
 
 
@@ -43,9 +44,9 @@ void run_experiments(bool RCM, bool HPRownet, bool HPSB, bool HPNBM, bool TwoCon
     std::cout << "Experimental results for Baseline" << std::endl;
     std::cout << "========================" << std::endl;
     reorder_baseline(ia, ja, rows, block_size, bsr, false);
-    analyzeBSR(bsr);
+    //analyzeBSR(bsr);
 
-    freeBSR(bsr);
+    //freeBSR(bsr);
     
 
     if (RCM) {
@@ -54,9 +55,9 @@ void run_experiments(bool RCM, bool HPRownet, bool HPSB, bool HPNBM, bool TwoCon
         std::cout << "Experimental results for RCM" << std::endl;
         std::cout << "========================" << std::endl;
         reorder_RCM(ia, ja, rows, block_size, bsr_rcm, false);
-        analyzeBSR(bsr_rcm);
+        //analyzeBSR(bsr_rcm);
 
-        freeBSR(bsr_rcm);
+        //freeBSR(bsr_rcm);
 
 
     }
@@ -67,8 +68,8 @@ void run_experiments(bool RCM, bool HPRownet, bool HPSB, bool HPNBM, bool TwoCon
         std::cout << "Experimental results for Rownet_HyperGraph_Partitioning" << std::endl;
         std::cout << "========================" << std::endl;
         reorder_HPRownet(ia, ja, rows, block_size, bsr_hpr, false);
-        analyzeBSR(bsr_hpr);
-        freeBSR(bsr_hpr);
+        //analyzeBSR(bsr_hpr);
+        //freeBSR(bsr_hpr);
     }
 
     if (HPSB) {
@@ -77,8 +78,8 @@ void run_experiments(bool RCM, bool HPRownet, bool HPSB, bool HPNBM, bool TwoCon
         std::cout << "Experimental results for Hypergraph_Partitioning_Single_Border" << std::endl;
         std::cout << "========================" << std::endl;
         reorder_HPSB(ia, ja, rows, block_size, bsr_hpsb, false);
-        analyzeBSR(bsr_hpsb);
-        freeBSR(bsr_hpsb);
+        //analyzeBSR(bsr_hpsb);
+        //freeBSR(bsr_hpsb);
     }
 
     if (HPNBM) {
@@ -87,8 +88,8 @@ void run_experiments(bool RCM, bool HPRownet, bool HPSB, bool HPNBM, bool TwoCon
         std::cout << "Experimental results for Hypergraph_Partitioning_Nonzero_Block_Minimization" << std::endl;
         std::cout << "========================" << std::endl;
         reorder_HPNBM(ia, ja, rows, block_size, bsr_hpn, false);
-        analyzeBSR(bsr_hpn);
-        freeBSR(bsr_hpn);
+        //analyzeBSR(bsr_hpn);
+        //freeBSR(bsr_hpn);
     }
 
     if (TwoConstraint) {
@@ -97,8 +98,8 @@ void run_experiments(bool RCM, bool HPRownet, bool HPSB, bool HPNBM, bool TwoCon
         std::cout << "Experimental results for Hypergraph_Partitioning_Two_Constraint" << std::endl;
         std::cout << "========================" << std::endl;
         reorder_TwoConstraint(ia, ja, rows, block_size, bsr_two, false);
-        analyzeBSR(bsr_two);
-        freeBSR(bsr_two);
+        //analyzeBSR(bsr_two);
+        //freeBSR(bsr_two);
     }
 
     if (RCM_HPNBM) {
@@ -107,8 +108,8 @@ void run_experiments(bool RCM, bool HPRownet, bool HPSB, bool HPNBM, bool TwoCon
         std::cout << "Experimental results for RCM + Hypergraph_Partitioning_Nonzero_Block_Minimization" << std::endl;
         std::cout << "========================" << std::endl;
         reorder_RCM_HPNBM(ia, ja, rows, block_size, bsr_rcm_hpn, false);
-        analyzeBSR(bsr_rcm_hpn);
-        freeBSR(bsr_rcm_hpn);
+        //analyzeBSR(bsr_rcm_hpn);
+        //freeBSR(bsr_rcm_hpn);
     }
 
     if (HPSB_HPNBM) {
@@ -117,8 +118,8 @@ void run_experiments(bool RCM, bool HPRownet, bool HPSB, bool HPNBM, bool TwoCon
         std::cout << "Experimental results for Hypergraph_Partitioning_Single_Border + Hypergraph_Partitioning_Nonzero_Block_Minimization" << std::endl;
         std::cout << "========================" << std::endl;
         reorder_HPSB_HPNBM(ia, ja, rows, block_size, bsr_hpsb_hpn, false);
-        analyzeBSR(bsr_hpsb_hpn);
-        freeBSR(bsr_hpsb_hpn);
+        //analyzeBSR(bsr_hpsb_hpn);
+        //freeBSR(bsr_hpsb_hpn);
     }
 
     if (HPRownet_HPNBM) {
@@ -127,30 +128,33 @@ void run_experiments(bool RCM, bool HPRownet, bool HPSB, bool HPNBM, bool TwoCon
         std::cout << "Experimental results for Rownet_HyperGraph_Partitioning + Hypergraph_Partitioning_Nonzero_Block_Minimization" << std::endl;
         std::cout << "========================" << std::endl;
         reorder_HPRownet_HPNBM(ia, ja, rows, block_size, bsr_hpr_hpn, false);
-        analyzeBSR(bsr_hpr_hpn);
-        freeBSR(bsr_hpr_hpn);
+        //analyzeBSR(bsr_hpr_hpn);
+        //freeBSR(bsr_hpr_hpn);
     }
 }
 
 void run_experiments(int no_ofblocks, double sparsity, int seg_start=2) {  
     // ====== User Configurable Parameters ======
     // Set the experiment parameters here
-    std::string folder_for_current_run = "/scratch/pioneer/users/kxt437/Dilated2D_FSeg" + std::to_string((int) std::pow(2, seg_start)) + "_N" + std::to_string(no_ofblocks) + "_Causal"+ "/";
+    std::string folder_for_current_run = "/scratch/pioneer/users/kxt437/Dilated2D_FSeg" + std::to_string((int) std::pow(2, seg_start)) + "_N" + std::to_string(no_ofblocks) + "_Causal_B128"+ "/";
     // std::to_string((int) std::pow(2, seg_start))  std::to_string(sparsity)
     // Bigbird_FSeg
 
 
-    size_t block_size = 16;
+    size_t block_size = 128;
     bool causal = true;
-    int num_experiments = 10;
+    int num_experiments = 2;
     std::vector<size_t> list_of_number_of_blocks = {(size_t)no_ofblocks}; // e.g., {1024, 2048, 4096, 8192, 16384, 32768, 65536}
 
     int big_bird_blocks = ((no_ofblocks * block_size) * sparsity) / 8;
     // Mask generation parameters (set to 0 or fill as needed)
-    int external_global = 0;//2 * big_bird_blocks; // e.g., 2 * big_bird_blocks
-    int internal_global = 0;
-    int sliding_window = 0;//3 * big_bird_blocks; // e.g., 3 * big_bird_blocks
-    int sliding_dilation = 0;
+    int external_global = 0; //2 * big_bird_blocks; // e.g., 2 * big_bird_blocks
+    int internal_global = 0;//2 * big_bird_blocks;
+    int sliding_window = 0;//6 * big_bird_blocks; // e.g., 3 * big_bird_blocks
+    //printf("External global: %d, Internal global: %d, Sliding window: %d\n", external_global, internal_global, sliding_window);
+    // generate a random sliding_dilation between 1 and 2 ^ ((block_size * no_ofblocks) - 9) 
+    int sliding_dilation = 0; //static_cast<int>(std::pow(2, rand() % (static_cast<int>(std::log2(block_size * no_ofblocks)) - 9)));
+    //printf("Sliding dilation: %d\n", sliding_dilation);
     int random_per_row = 0; //3 * big_bird_blocks; // will be set below
     std::vector<size_t> segment_sizes = {}; // e.g., {4, 8, 16}
     std::vector<size_t> dilation_sizes = {}; // e.g., {1, 2, 4}
@@ -163,13 +167,13 @@ void run_experiments(int no_ofblocks, double sparsity, int seg_start=2) {
     //dilation_sizes = {};
     
     // Which experiments to run
-    bool RCM = true;
-    bool HPRownet = true;
-    bool HPSB = true;
+    bool RCM = false;
+    bool HPRownet = false;
+    bool HPSB = false;
     bool HPNBM = false;
     bool TwoConstraint = false;
     bool RCM_HPNBM = false;
-    bool HPSB_HPNBM = true;
+    bool HPSB_HPNBM = false;
     bool HPRownet_HPNBM = true;
     // ==========================================
 
@@ -211,8 +215,22 @@ void run_experiments(int no_ofblocks, double sparsity, int seg_start=2) {
             //random_per_row = static_cast<int>(sparsity * cols);
 
             // Generate mask
+            //sliding_dilation = static_cast<int>(std::pow(2, rand() % (static_cast<int>(std::log2(block_size * no_ofblocks)) )));
             generate_mask(rows, cols, external_global, internal_global, sliding_window, sliding_dilation, random_per_row, segment_sizes, dilation_sizes, causal, ia, ja);
-
+            /*
+            mmdata* mm = (struct mmdata *) calloc(1, sizeof(struct mmdata));
+            std::string mm_filename_str = "/scratch/pioneer/users/kxt437/Bigbird_S" + std::to_string(sparsity) + "_N" + std::to_string(no_ofblocks) + "_Causal/Exp" + std::to_string(exp) + "/original_matrix.mtx";
+            
+            char* mm_filename = new char[mm_filename_str.length() + 1];
+            std::strcpy(mm_filename, mm_filename_str.c_str());
+            
+            if (initialize_mm(mm_filename, mm) != 0) {
+                std::cerr << "Error initializing matrix from file: " << mm_filename << std::endl;
+                return;
+            }
+            
+            mm2csr(mm, ia, ja, rows, cols);
+            */
             std::cout << "========================" << std::endl;
             run_experiments(RCM, HPRownet, HPSB, HPNBM, TwoConstraint, RCM_HPNBM, HPSB_HPNBM, HPRownet_HPNBM, ia, ja, rows, block_size);
 

@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdint.h>
+#include <iostream>
 
 #include "HPNBM/mm.h"
 
@@ -143,14 +144,20 @@ int initialize_mm(char *infile, struct mmdata *mm) {
 	sprintf(filename, "%s", infile);
 	
 	FILE *f = fopen(filename, "r");
-	
+	// check if file opened successfully
+	if (f == NULL) {
+		std::cerr << "Error: Could not open file " << filename << std::endl;
+		return -1; // Return an error code
+	}
 	mm -> symmetricity = 0;
 
 	mm->header = (char *)malloc(sizeof(char) * (1<<20));
 	memset(mm->header, '\0', sizeof(char) * (1<<20));
 	char *hptr = mm->header;
 	
+	
 	fgets(line, MM_MAXLINE, f);
+	
 	if(line[0] == '%') {
 
 		int tmp = strlen(line);
@@ -180,6 +187,7 @@ int initialize_mm(char *infile, struct mmdata *mm) {
 	mm -> ndiagonal = 0;
 	mm -> x = (int *)malloc(mm->NNZ * sizeof(int));
 	mm -> y = (int *)malloc(mm->NNZ * sizeof(int));
+	//std::cout << "Matrix dimensions: " << mm->N << " x " << mm->M << " with " << mm->NNZ << " non-zeros." << std::endl;
 	mm -> v = NULL;	
 
 	fgets(line, MM_MAXLINE, f);
@@ -213,7 +221,7 @@ int initialize_mm(char *infile, struct mmdata *mm) {
 			mm -> ndiagonal ++;
 	}
 
-	mm -> realnnz = (!mm -> symmetricity)? mm->NNZ: 2 * mm->NNZ - mm->ndiagonal;
+	mm -> realnnz = mm->NNZ;
 
 	return 0;
 }
@@ -329,18 +337,17 @@ void mm2csr(struct mmdata *mm, size_t* &ia, size_t* &ja, size_t &rows, size_t &c
 	g -> xadj = (int *)calloc(g->nvtxs+2, sizeof(int));
 	
 	// struct point *points = (struct point *)calloc(mm -> NNZ * 2, sizeof(struct point));
-	struct point *points = (struct point *)calloc((uint64_t)(mm -> NNZ) * 2, sizeof(struct point));
+	struct point *points = (struct point *)calloc((uint64_t)(mm -> NNZ), sizeof(struct point));
 	int npoints = 0;
 	for(i=0; i<mm->NNZ; i++) {
 	
 		x = mm->x[i];
 		y = mm->y[i];
 		
-		if(x != y) {
-			points[npoints].x = x<y? x: y;
-			points[npoints].y = x<y? y: x;
-			npoints ++;
-		}
+		points[npoints].x = x;
+		points[npoints].y = y;
+		npoints ++;
+
 	}
 	
 	qsort(points, npoints, sizeof(struct point), comp_point);
@@ -350,15 +357,15 @@ void mm2csr(struct mmdata *mm, size_t* &ia, size_t* &ja, size_t &rows, size_t &c
 	for(i=0; i<npoints; i++) {
 
 		x = points[i].x;
-		y = points[i].y;
+		//y = points[i].y;
 		if(x == xprev && y == yprev)
 			continue;
 	
 		g -> xadj[x+2] ++;
-		g -> xadj[y+2] ++;
+		//g -> xadj[y+2] ++;
 		
 		xprev = x;
-		yprev = y;
+		//yprev = y;
 	}
 
 	for(i=2; i<g->nvtxs+2; i++)
@@ -377,12 +384,12 @@ void mm2csr(struct mmdata *mm, size_t* &ia, size_t* &ja, size_t &rows, size_t &c
 			continue;
 	
 		g -> adjncy[g -> xadj[x+1] ++] = y;
-		g -> adjncy[g -> xadj[y+1] ++] = x;
+		//g -> adjncy[g -> xadj[y+1] ++] = x;
 		g -> vwgt[x*g->nconst]++;
-		g -> vwgt[y*g->nconst]++;
+		//g -> vwgt[y*g->nconst]++;
 		
 		xprev = x;
-		yprev = y;
+		//yprev = y;
 	}
 
 	free(points);

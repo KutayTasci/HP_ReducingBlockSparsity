@@ -51,15 +51,18 @@ void reorder_baseline(size_t* ia, size_t* ja, size_t n, size_t block_size, BSR*&
     }
     std::cout << "No reordering applied." << std::endl;
     writeReorderedMatrix(ia, ja, rows, cols, "original_matrix.mtx");
+    testBlockSparsity(block_row_ind, block_col_ind, number_of_blocks, ia, ja, rows, cols);
 
-    create_BSR(ia, ja, rows, cols, block_size, bsr);
-
+    //create_BSR(ia, ja, rows, cols, block_size, bsr);
+    /**
+     
     if (verbose)
     {
         double block_sparsity = (double)(bsr->num_blocks) / (number_of_blocks * number_of_blocks);
         std::cout << "Sparsity details without reordering: " << block_sparsity * 100 << "%" << std::endl;
     }
-
+    * Analyze the BSR structure if needed
+     */
     delete[] block_row_ind;
     delete[] block_col_ind;
 
@@ -107,14 +110,16 @@ void reorder_RCM(size_t* ia, size_t* ja, size_t n, size_t block_size, BSR*& bsr,
     
     writeReorderedMatrix(ia_new, ja_new, rows, cols, "rcm_reordered.mtx");
 
-    create_BSR(ia_new, ja_new, rows, cols, block_size, bsr);
-
-    if (verbose)
-    {
-        double block_sparsity = (double)(bsr->num_blocks) / (number_of_blocks * number_of_blocks);
-        std::cout << "Sparsity details after RCM reordering: " << block_sparsity * 100 << "%" << std::endl;
+    block_row_ind[0] = 0;
+    for (size_t i = 1; i <= number_of_blocks; ++i) {
+        block_row_ind[i] = i * block_size;
     }
-    
+
+    block_col_ind[0] = 0;
+    for (size_t j = 1; j <= number_of_blocks; ++j) {
+        block_col_ind[j] = j * block_size;
+    }
+    testBlockSparsity(block_row_ind, block_col_ind, number_of_blocks, ia_new, ja_new, rows, cols);
 
     delete[] block_row_ind;
     delete[] block_col_ind;
@@ -164,15 +169,19 @@ void reorder_HPSB(size_t* ia, size_t* ja, size_t n, size_t block_size, BSR*& bsr
     
     reorderCSR(ia, ja, rows, cols, row_perm, col_perm, ia_new, ja_new);
     
-    create_BSR(ia_new, ja_new, rows, cols, block_size, bsr);
     
     writeReorderedMatrix(ia_new, ja_new, rows, cols, "hpsb_reordered.mtx");
 
-    if (verbose)
-    {
-        double block_sparsity =  (double)(bsr->num_blocks) / (number_of_blocks * number_of_blocks);
-        std::cout << "Sparsity details after HPSB reordering: " << block_sparsity * 100 << "%" << std::endl;
+    block_row_ind[0] = 0;
+    for (size_t i = 1; i <= number_of_blocks; ++i) {
+        block_row_ind[i] = i * block_size;
     }
+
+    block_col_ind[0] = 0;
+    for (size_t j = 1; j <= number_of_blocks; ++j) {
+        block_col_ind[j] = j * block_size;
+    }
+    testBlockSparsity(block_row_ind, block_col_ind, number_of_blocks, ia_new, ja_new, rows, cols);
 
     delete[] block_row_ind;
     delete[] block_col_ind;
@@ -220,14 +229,19 @@ void reorder_HPNBM(size_t* ia, size_t* ja, size_t n, size_t block_size, BSR*& bs
     size_t* ia_new = nullptr;
     size_t* ja_new = nullptr;
     reorderCSR_Rows(ia, ja, rows, cols, row_perm, ia_new, ja_new);
-    create_BSR(ia_new, ja_new, rows, cols, block_size, bsr);
+ 
 
     writeReorderedMatrix(ia_new, ja_new, rows, cols, "hpnbm_reordered.mtx");
-    if (verbose)
-    {
-        double block_sparsity = (double)(bsr->num_blocks) / (number_of_blocks * number_of_blocks);
-        std::cout << "Sparsity details after HPNBM reordering: " << block_sparsity * 100 << "%" << std::endl;
+    block_row_ind[0] = 0;
+    for (size_t i = 1; i <= number_of_blocks; ++i) {
+        block_row_ind[i] = i * block_size;
     }
+
+    block_col_ind[0] = 0;
+    for (size_t j = 1; j <= number_of_blocks; ++j) {
+        block_col_ind[j] = j * block_size;
+    }
+    testBlockSparsity(block_row_ind, block_col_ind, number_of_blocks, ia_new, ja_new, rows, cols);
 
     delete[] block_row_ind;
     delete[] block_col_ind;
@@ -275,13 +289,17 @@ void reorder_HPNBM_PaToH(size_t* ia, size_t* ja, size_t n, size_t block_size, BS
     size_t* ja_new = nullptr;
     reorderCSR_Rows(ia, ja, rows, cols, row_perm, ia_new, ja_new);
 
-    create_BSR(ia_new, ja_new, rows, cols, block_size, bsr);
 
-    if (verbose)
-    {
-        double block_sparsity = (double)(bsr->num_blocks) / (number_of_blocks * number_of_blocks);
-        std::cout << "Sparsity details after HPNBM_Patoh reordering: " << block_sparsity * 100 << "%" << std::endl;
+    block_row_ind[0] = 0;
+    for (size_t i = 1; i <= number_of_blocks; ++i) {
+        block_row_ind[i] = i * block_size;
     }
+
+    block_col_ind[0] = 0;
+    for (size_t j = 1; j <= number_of_blocks; ++j) {
+        block_col_ind[j] = j * block_size;
+    }
+    testBlockSparsity(block_row_ind, block_col_ind, number_of_blocks, ia_new, ja_new, rows, cols);
 
     delete[] block_row_ind;
     delete[] block_col_ind;
@@ -332,13 +350,18 @@ void reorder_HPRownet(size_t* ia, size_t* ja, size_t n, size_t block_size, BSR*&
 
     writeReorderedMatrix(ia_new, ja_new, rows, cols, "hprownet_reordered.mtx");
 
-    create_BSR(ia_new, ja_new, rows, cols, block_size, bsr);
+ 
 
-    if (verbose)
-    {
-        double block_sparsity = (double)(bsr->num_blocks) / (number_of_blocks * number_of_blocks);
-        std::cout << "Block sparsity after HP_Rownet: " << block_sparsity * 100 << "%" << std::endl;
+    block_row_ind[0] = 0;
+    for (size_t i = 1; i <= number_of_blocks; ++i) {
+        block_row_ind[i] = i * block_size;
     }
+
+    block_col_ind[0] = 0;
+    for (size_t j = 1; j <= number_of_blocks; ++j) {
+        block_col_ind[j] = j * block_size;
+    }
+    testBlockSparsity(block_row_ind, block_col_ind, number_of_blocks, ia_new, ja_new, rows, cols);
 
     delete[] block_row_ind;
     delete[] block_col_ind;
@@ -396,15 +419,20 @@ void reorder_RCM_HPNBM(size_t* ia, size_t* ja, size_t n, size_t block_size, BSR*
     size_t* ia_new = nullptr;
     size_t* ja_new = nullptr;
     reorderCSR_Rows(ia_reordered, ja_reordered, rows, cols, row_perm, ia_new, ja_new);
-    create_BSR(ia_new, ja_new, rows, cols, block_size, bsr);
+
 
     writeReorderedMatrix(ia_new, ja_new, rows, cols, "rcm_hpnbm_reordered.mtx");
 
-    if (verbose)
-    {
-        double block_sparsity = (double)(bsr->num_blocks) / (number_of_blocks * number_of_blocks);
-        std::cout << "Sparsity details after RCM+HPNBM reordering: " << block_sparsity * 100 << "%" << std::endl;
+    block_row_ind[0] = 0;
+    for (size_t i = 1; i <= number_of_blocks; ++i) {
+        block_row_ind[i] = i * block_size;
     }
+
+    block_col_ind[0] = 0;
+    for (size_t j = 1; j <= number_of_blocks; ++j) {
+        block_col_ind[j] = j * block_size;
+    }
+    testBlockSparsity(block_row_ind, block_col_ind, number_of_blocks, ia_new, ja_new, rows, cols);
 
     delete[] ia_reordered;
     delete[] ja_reordered;
@@ -465,13 +493,18 @@ void reorder_HPSB_HPNBM(size_t* ia, size_t* ja, size_t n, size_t block_size, BSR
     size_t* ia_new = nullptr;
     size_t* ja_new = nullptr;
     reorderCSR_Rows(ia_reordered, ja_reordered, rows, cols, row_perm, ia_new, ja_new);
-    create_BSR(ia_new, ja_new, rows, cols, block_size, bsr);
+
     writeReorderedMatrix(ia_new, ja_new, rows, cols, "hpsb_hpnbm_reordered.mtx");
-    if (verbose)
-    {
-        double block_sparsity = (double)(bsr->num_blocks) / (number_of_blocks * number_of_blocks);
-        std::cout << "Sparsity details after HPSB+HPNBM reordering: " << block_sparsity * 100 << "%" << std::endl;
+    block_row_ind[0] = 0;
+    for (size_t i = 1; i <= number_of_blocks; ++i) {
+        block_row_ind[i] = i * block_size;
     }
+
+    block_col_ind[0] = 0;
+    for (size_t j = 1; j <= number_of_blocks; ++j) {
+        block_col_ind[j] = j * block_size;
+    }
+    testBlockSparsity(block_row_ind, block_col_ind, number_of_blocks, ia_new, ja_new, rows, cols);
 
     delete[] ia_new;
     delete[] ja_new;
@@ -527,13 +560,18 @@ void reorder_HPRownet_HPNBM(size_t* ia, size_t* ja, size_t n, size_t block_size,
     size_t* ia_new = nullptr;
     size_t* ja_new = nullptr;
     reorderCSR_Rows(ia_reordered, ja_reordered, rows, cols, row_perm, ia_new, ja_new);
-    create_BSR(ia_new, ja_new, rows, cols, block_size, bsr);
+
     writeReorderedMatrix(ia_new, ja_new, rows, cols, "hp_hpnbm_reordered.mtx");
-    if (verbose)
-    {
-        double block_sparsity = (double)(bsr->num_blocks) / (number_of_blocks * number_of_blocks);
-        std::cout << "Sparsity details after HP+HPNBM reordering: " << block_sparsity * 100 << "%" << std::endl;
+    block_row_ind[0] = 0;
+    for (size_t i = 1; i <= number_of_blocks; ++i) {
+        block_row_ind[i] = i * block_size;
     }
+
+    block_col_ind[0] = 0;
+    for (size_t j = 1; j <= number_of_blocks; ++j) {
+        block_col_ind[j] = j * block_size;
+    }
+    testBlockSparsity(block_row_ind, block_col_ind, number_of_blocks, ia_new, ja_new, rows, cols);
 
     delete[] ia_reordered;
     delete[] ja_reordered;
@@ -584,13 +622,18 @@ void reorder_TwoConstraint(size_t* ia, size_t* ja, size_t n, size_t block_size, 
     size_t* ia_new = nullptr;
     size_t* ja_new = nullptr;
     reorderCSR(ia, ja, rows, cols, row_perm, col_perm, ia_new, ja_new);
-    create_BSR(ia_new, ja_new, rows, cols, block_size, bsr);
+
     writeReorderedMatrix(ia_new, ja_new, rows, cols, "two_constraint_hp_reordered.mtx");
-    if (verbose)
-    {
-        double block_sparsity = (double)(bsr->num_blocks) / (number_of_blocks * number_of_blocks);
-        std::cout << "Sparsity details after Two-Constraint HP reordering: " << block_sparsity * 100 << "%" << std::endl;
+    block_row_ind[0] = 0;
+    for (size_t i = 1; i <= number_of_blocks; ++i) {
+        block_row_ind[i] = i * block_size;
     }
+
+    block_col_ind[0] = 0;
+    for (size_t j = 1; j <= number_of_blocks; ++j) {
+        block_col_ind[j] = j * block_size;
+    }
+    testBlockSparsity(block_row_ind, block_col_ind, number_of_blocks, ia_new, ja_new, rows, cols);
 
     delete[] block_row_ind;
     delete[] block_col_ind;

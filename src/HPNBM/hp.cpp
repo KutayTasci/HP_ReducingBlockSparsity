@@ -86,7 +86,7 @@ void HPSB_RowNet_t(
     std::fill(net_weights.get(), net_weights.get() + num_hyperedges, 1);
 
     // Create context and hypergraph
-    mt_kahypar_context_t* context = mt_kahypar_context_from_preset(DEFAULT);
+    mt_kahypar_context_t* context = mt_kahypar_context_from_preset(LARGE_K);
     mt_kahypar_hypergraph_t hypergraph = mt_kahypar_create_hypergraph(
         context, num_nodes, num_hyperedges,
         net_indices.get(), nets.get(),
@@ -280,7 +280,7 @@ void HPNBM(
     std::fill(net_weights.get(), net_weights.get() + num_hyperedges, 1);
 
     // Create mt-kahypar context and hypergraph
-    mt_kahypar_context_t* context = mt_kahypar_context_from_preset(HIGHEST_QUALITY);
+    mt_kahypar_context_t* context = mt_kahypar_context_from_preset(DEFAULT);
     mt_kahypar_hypergraph_t hypergraph = mt_kahypar_create_hypergraph(
         context, num_nodes, num_hyperedges,
         net_indices.get(), nets.get(),
@@ -746,7 +746,7 @@ void HP_Rownet(
     std::fill(net_weights.get(), net_weights.get() + num_hyperedges, 1);
 
     // Create context and hypergraph
-    mt_kahypar_context_t* context = mt_kahypar_context_from_preset(DEFAULT);
+    mt_kahypar_context_t* context = mt_kahypar_context_from_preset(LARGE_K);
     mt_kahypar_hypergraph_t hypergraph = mt_kahypar_create_hypergraph(
         context, num_nodes, num_hyperedges,
         net_indices.get(), nets.get(),
