@@ -49,24 +49,24 @@ make
 ---
 
 ## 🚀 Usage
+```
+Usage: ./TestHP [OPTIONS]
 
-./TestHP [OPTIONS]
---
-### Required Arguments
-| Flag | Description |
-|------|-------------|
-| -n <int> | Number of blocks |
-| -b <int> | Block size |
-| -p <pattern> | Mask pattern: bigbird | longnet | longformer |
+Required:
+  -n <int>         Number of blocks
+  -b <int>         Block size
+  -p <pattern>     Mask pattern: bigbird | longnet | longformer
 
-### Optional Arguments
-| Flag | Description |
-|------|-------------|
-| -s <double> | Sparsity (required for bigbird and longformer) |
-| -g <int> | Segment start exponent (required for longnet) |
-| --causal | Apply causal masking (default: off) |
-| -o <path> | Save output path (default: none) |
-| -h, --help | Show help |
+Optional:
+  -s <double>      Sparsity (required for bigbird, longformer)
+  -g <int>         Segment start exponent (required for longnet)
+  --causal         Apply causal masking (default: off)
+  -o <path>        Save output path (default: none)
+  -h, --help       Show help
+
+Examples:
+  ./TestHP -n 4096 -b 128 -p bigbird -s 0.1 --causal
+  ./TestHP -n 4096 -b 128 -p longnet -g 2 -o out/
 
 ### Examples
 
@@ -78,7 +78,7 @@ make
 
 # LongFormer pattern with sparsity
 ./TestHP -n 4096 -b 128 -p longformer -s 0.05
-
+```
 ---
 
 ## 📖 Notes
