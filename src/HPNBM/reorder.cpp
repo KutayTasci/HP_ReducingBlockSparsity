@@ -50,7 +50,7 @@ void reorder_baseline(size_t* ia, size_t* ja, size_t n, size_t block_size, BSR*&
         testBlockSparsity(block_row_ind, block_col_ind, number_of_blocks, ia, ja, rows, cols);
     }
     std::cout << "No reordering applied." << std::endl;
-    writeReorderedMatrix(ia, ja, rows, cols, "original_matrix.mtx");
+    writeReorderedMatrix(ia, ja, rows, cols, "/original_matrix.mtx");
     testBlockSparsity(block_row_ind, block_col_ind, number_of_blocks, ia, ja, rows, cols);
 
     //create_BSR(ia, ja, rows, cols, block_size, bsr);
@@ -107,8 +107,8 @@ void reorder_RCM(size_t* ia, size_t* ja, size_t n, size_t block_size, BSR*& bsr,
     size_t* ia_new = nullptr;
     size_t* ja_new = nullptr;
     reorderCSR(ia, ja, rows, cols, perm, perm, ia_new, ja_new);
-    
-    writeReorderedMatrix(ia_new, ja_new, rows, cols, "rcm_reordered.mtx");
+
+    writeReorderedMatrix(ia_new, ja_new, rows, cols, "/rcm_reordered.mtx");
 
     block_row_ind[0] = 0;
     for (size_t i = 1; i <= number_of_blocks; ++i) {
@@ -168,9 +168,9 @@ void reorder_HPSB(size_t* ia, size_t* ja, size_t n, size_t block_size, BSR*& bsr
     size_t* ja_new = nullptr;
     
     reorderCSR(ia, ja, rows, cols, row_perm, col_perm, ia_new, ja_new);
-    
-    
-    writeReorderedMatrix(ia_new, ja_new, rows, cols, "hpsb_reordered.mtx");
+
+
+    writeReorderedMatrix(ia_new, ja_new, rows, cols, "/hpsb_reordered.mtx");
 
     block_row_ind[0] = 0;
     for (size_t i = 1; i <= number_of_blocks; ++i) {
@@ -231,7 +231,7 @@ void reorder_HPNBM(size_t* ia, size_t* ja, size_t n, size_t block_size, BSR*& bs
     reorderCSR_Rows(ia, ja, rows, cols, row_perm, ia_new, ja_new);
  
 
-    writeReorderedMatrix(ia_new, ja_new, rows, cols, "hpnbm_reordered.mtx");
+    writeReorderedMatrix(ia_new, ja_new, rows, cols, "/hpnbm_reordered.mtx");
     block_row_ind[0] = 0;
     for (size_t i = 1; i <= number_of_blocks; ++i) {
         block_row_ind[i] = i * block_size;
@@ -348,7 +348,7 @@ void reorder_HPRownet(size_t* ia, size_t* ja, size_t n, size_t block_size, BSR*&
     size_t* ja_new = nullptr;
     reorderCSR_Cols(ia, ja, rows, cols, col_perm, ia_new, ja_new);
 
-    writeReorderedMatrix(ia_new, ja_new, rows, cols, "hprownet_reordered.mtx");
+    writeReorderedMatrix(ia_new, ja_new, rows, cols, "/hprownet_reordered.mtx");
 
  
 
@@ -421,7 +421,7 @@ void reorder_RCM_HPNBM(size_t* ia, size_t* ja, size_t n, size_t block_size, BSR*
     reorderCSR_Rows(ia_reordered, ja_reordered, rows, cols, row_perm, ia_new, ja_new);
 
 
-    writeReorderedMatrix(ia_new, ja_new, rows, cols, "rcm_hpnbm_reordered.mtx");
+    writeReorderedMatrix(ia_new, ja_new, rows, cols, "/rcm_hpnbm_reordered.mtx");
 
     block_row_ind[0] = 0;
     for (size_t i = 1; i <= number_of_blocks; ++i) {
@@ -494,7 +494,7 @@ void reorder_HPSB_HPNBM(size_t* ia, size_t* ja, size_t n, size_t block_size, BSR
     size_t* ja_new = nullptr;
     reorderCSR_Rows(ia_reordered, ja_reordered, rows, cols, row_perm, ia_new, ja_new);
 
-    writeReorderedMatrix(ia_new, ja_new, rows, cols, "hpsb_hpnbm_reordered.mtx");
+    writeReorderedMatrix(ia_new, ja_new, rows, cols, "/hpsb_hpnbm_reordered.mtx");
     block_row_ind[0] = 0;
     for (size_t i = 1; i <= number_of_blocks; ++i) {
         block_row_ind[i] = i * block_size;
@@ -561,7 +561,7 @@ void reorder_HPRownet_HPNBM(size_t* ia, size_t* ja, size_t n, size_t block_size,
     size_t* ja_new = nullptr;
     reorderCSR_Rows(ia_reordered, ja_reordered, rows, cols, row_perm, ia_new, ja_new);
 
-    writeReorderedMatrix(ia_new, ja_new, rows, cols, "hp_hpnbm_reordered.mtx");
+    writeReorderedMatrix(ia_new, ja_new, rows, cols, "/hp_hpnbm_reordered.mtx");
     block_row_ind[0] = 0;
     for (size_t i = 1; i <= number_of_blocks; ++i) {
         block_row_ind[i] = i * block_size;
@@ -623,7 +623,7 @@ void reorder_TwoConstraint(size_t* ia, size_t* ja, size_t n, size_t block_size, 
     size_t* ja_new = nullptr;
     reorderCSR(ia, ja, rows, cols, row_perm, col_perm, ia_new, ja_new);
 
-    writeReorderedMatrix(ia_new, ja_new, rows, cols, "two_constraint_hp_reordered.mtx");
+    writeReorderedMatrix(ia_new, ja_new, rows, cols, "/two_constraint_hp_reordered.mtx");
     block_row_ind[0] = 0;
     for (size_t i = 1; i <= number_of_blocks; ++i) {
         block_row_ind[i] = i * block_size;

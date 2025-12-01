@@ -211,7 +211,7 @@ void generate_mask(
         random_connections(rows, cols, random_per_row, mask_set);
     }
 
-    printf("Applying 2D dilation with %zu segment sizes and %zu dilation sizes.\n", segment_sizes.size(), dilation_sizes.size());
+    //printf("Applying 2D dilation with %zu segment sizes and %zu dilation sizes.\n", segment_sizes.size(), dilation_sizes.size());
     if (!segment_sizes.empty() && !dilation_sizes.empty()) {
         TwoD_dilation(rows, cols, segment_sizes, dilation_sizes, mask_set);
     }
@@ -224,4 +224,82 @@ void generate_mask(
     std::cout << "Total non-zeros in the mask: " << mask_set.size() << std::endl;
     std::cout << "Sparsity of the mask: " << static_cast<double>(mask_set.size()) / (rows * cols) << std::endl;
 
+}
+
+void generate_bigbird_mask(
+    size_t rows,
+    size_t cols,
+    int window_size,
+    int num_global_tokens,
+    int random_per_row,
+    bool apply_causal, 
+    size_t*& ia,
+    size_t*& ja
+) {
+    generate_mask(
+        rows,
+        cols,
+        num_global_tokens,  // external_global
+        0,                  // internal_global
+        window_size,        // sliding window
+        1,                  // dilation = 1
+        random_per_row,     // random per row
+        {},                 // no 2D segments
+        {},                 // no 2D dilation
+        apply_causal,       // user chooses causal
+        ia,
+        ja
+    );
+}
+
+void generate_longnet_mask(
+    size_t rows,
+    size_t cols,
+    int window_size,                                      // local window (LongNet still has this)
+    const std::vector<size_t>& segment_sizes,             // user-provided segments
+    const std::vector<size_t>& dilation_sizes,            // user-provided dilations
+    bool apply_causal,                                    // optionally causal
+    size_t*& ia,
+    size_t*& ja
+) {
+    generate_mask(
+        rows,
+        cols,
+        0,                    // external global
+        0,                    // internal global
+        window_size,          // LongNet keeps local attention
+        1,                    // dilation for sliding window = 1
+        0,                    // no random connections
+        segment_sizes,        // LongNet hierarchical blocks
+        dilation_sizes,       // LongNet exponential dilations
+        apply_causal,         // user chooses causal
+        ia,
+        ja
+    );
+}
+    
+void generate_longformer_mask(
+    size_t rows,
+    size_t cols,
+    int window_size,          // local window
+    int dilation,              // dilation for sliding window
+    int num_internal_global_tokens,    // global tokens
+    bool apply_causal,        // optionally causal
+    size_t*& ia,
+    size_t*& ja
+) {
+    generate_mask(
+        rows,
+        cols,
+        0,                            // no external global
+        num_internal_global_tokens,   // internal global tokens
+        window_size,                  // local window
+        dilation,                     // dilation for sliding window
+        0,                            // no random connections
+        {},                           // no 2D segments
+        {},                           // no 2D dilation
+        apply_causal,                 // user chooses causal
+        ia,
+        ja
+    );
 }

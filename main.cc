@@ -6,6 +6,7 @@
 #include <fstream>
 #include <streambuf> // Required for std::streambuf
 #include <cstring>   // Required for std::strcpy
+#include <optional>
 
 
 
@@ -14,25 +15,44 @@
 #include "HPNBM/mask_generator.h"
 #include "HPNBM/mm.h"
 
+//
+// Supported mask patterns
+//
+enum class MaskPattern {
+    BigBird,
+    LongNet,
+    LongFormer
+};
 
+//
+// Global configuration
+//
+struct Config {
+    int no_blocks = -1;              // required
+    int block_size = -1;             // required
+    MaskPattern pattern;             // required
+    double sparsity = -1.0;          // required for bigbird/longformer
+    int segment_start = -1;          // required for longnet
+    bool apply_causal = false;       // optional default = false
+    std::optional<std::string> save_path = std::nullopt; // optional
+    std::optional<std::string> matrix_file = std::nullopt; // optional matrix file
+};
+
+static std::string pattern_to_string(MaskPattern p) {
+    switch (p) {
+        case MaskPattern::BigBird:   return "bigbird";
+        case MaskPattern::LongNet:   return "longnet";
+        case MaskPattern::LongFormer:return "longformer";
+    }
+    return "unknown";
+}
 
 extern std::string write_path;
 
-void printCSR(size_t* ia, size_t* ja, size_t rows) {
-    // Output the generated CSR arrays 
 
-    std::cout << "IA: ";
-    for (size_t i = 0; i <= rows; ++i) {
-        std::cout << ia[i] << " ";
-    }
-    std::cout << std::endl;
-
-    std::cout << "JA: ";
-    for (size_t i = 0; i < ia[rows]; ++i) {
-        std::cout << ja[i] << " ";
-    }
-    std::cout << std::endl;
-   
+// Function to set it
+inline void set_global_write_path(const std::string& path) {
+    write_path = path;
 }
 
 void run_experiments(bool RCM, bool HPRownet, bool HPSB, bool HPNBM, bool TwoConstraint, 
@@ -133,153 +153,252 @@ void run_experiments(bool RCM, bool HPRownet, bool HPSB, bool HPNBM, bool TwoCon
     }
 }
 
-void run_experiments(int no_ofblocks, double sparsity, int seg_start=2) {  
-    // ====== User Configurable Parameters ======
-    // Set the experiment parameters here
-    std::string folder_for_current_run = "/scratch/pioneer/users/kxt437/Dilated2D_FSeg" + std::to_string((int) std::pow(2, seg_start)) + "_N" + std::to_string(no_ofblocks) + "_Causal_B128"+ "/";
-    // std::to_string((int) std::pow(2, seg_start))  std::to_string(sparsity)
-    // Bigbird_FSeg
-
-
-    size_t block_size = 128;
-    bool causal = true;
-    int num_experiments = 2;
-    std::vector<size_t> list_of_number_of_blocks = {(size_t)no_ofblocks}; // e.g., {1024, 2048, 4096, 8192, 16384, 32768, 65536}
-
-    int big_bird_blocks = ((no_ofblocks * block_size) * sparsity) / 8;
-    // Mask generation parameters (set to 0 or fill as needed)
-    int external_global = 0; //2 * big_bird_blocks; // e.g., 2 * big_bird_blocks
-    int internal_global = 0;//2 * big_bird_blocks;
-    int sliding_window = 0;//6 * big_bird_blocks; // e.g., 3 * big_bird_blocks
-    //printf("External global: %d, Internal global: %d, Sliding window: %d\n", external_global, internal_global, sliding_window);
-    // generate a random sliding_dilation between 1 and 2 ^ ((block_size * no_ofblocks) - 9) 
-    int sliding_dilation = 0; //static_cast<int>(std::pow(2, rand() % (static_cast<int>(std::log2(block_size * no_ofblocks)) - 9)));
-    //printf("Sliding dilation: %d\n", sliding_dilation);
-    int random_per_row = 0; //3 * big_bird_blocks; // will be set below
-    std::vector<size_t> segment_sizes = {}; // e.g., {4, 8, 16}
-    std::vector<size_t> dilation_sizes = {}; // e.g., {1, 2, 4}
-
-    for (int seg = seg_start; seg < static_cast<int>(std::log2(block_size * no_ofblocks)); ++seg) {
-        segment_sizes.push_back(static_cast<size_t>(std::pow(2, seg)));
-        dilation_sizes.push_back(static_cast<size_t>(std::pow(2, seg - seg_start)));
+void run_experiments_mask(const Config& cfg) {
+    // Determine pattern string
+    std::string pattern_str;
+    switch(cfg.pattern) {
+        case MaskPattern::BigBird:    pattern_str = "BigBird"; break;
+        case MaskPattern::LongNet:    pattern_str = "LongNet"; break;
+        case MaskPattern::LongFormer: pattern_str = "LongFormer"; break;
     }
-    //segment_sizes = {};
-    //dilation_sizes = {};
+
+    // Determine folder: use save_path if provided, else temp folder
+    std::string folder;
+    if (cfg.save_path) {
+        folder = cfg.save_path.value();
+    } else {
+        folder = "tmp/experiments";
+    }
+
+    if (pattern_str == "BigBird" || pattern_str == "LongFormer") {
+        folder += "/" + pattern_str + "_S" + std::to_string(cfg.sparsity) + "_N" + std::to_string(cfg.no_blocks) + "_B" + std::to_string(cfg.block_size);
+    } else if (pattern_str == "LongNet") {
+        folder += "/" + pattern_str + "_G" + std::to_string(cfg.segment_start) + "_N" + std::to_string(cfg.no_blocks) + "_B" + std::to_string(cfg.block_size);
+    } else {
+        std::cout << "Unknown pattern!" << std::endl;
+        return;
+    }
+    if (cfg.apply_causal) folder += "_Causal";
+    set_global_write_path(folder);
     
-    // Which experiments to run
-    bool RCM = false;
-    bool HPRownet = false;
-    bool HPSB = false;
-    bool HPNBM = false;
-    bool TwoConstraint = false;
-    bool RCM_HPNBM = false;
-    bool HPSB_HPNBM = false;
-    bool HPRownet_HPNBM = true;
-    // ==========================================
-
-    // Save the original cout buffer
-    std::streambuf* original_cout_buffer = std::cout.rdbuf();
-
-    // Create output folder
-    std::string command = "mkdir -p " + folder_for_current_run;
-    system(command.c_str());
-
-    for (size_t number_of_blocks : list_of_number_of_blocks) {
-        std::string output_filename = folder_for_current_run + "/" + std::to_string(number_of_blocks) + "_blocks.txt";
-        std::ofstream file_out(output_filename);
-        std::cout.rdbuf(file_out.rdbuf());
-
-        size_t rows = number_of_blocks * block_size;
-        size_t cols = number_of_blocks * block_size;
-        std::cout << "========================" << std::endl;
-        std::cout << "Running experiments for matrix size: " << rows << " x " << cols << std::endl;
-        std::cout << "========================" << std::endl;
-
-        for (int exp = 0; exp < num_experiments; ++exp) {
-            std::string folder_for_current_experiment = folder_for_current_run + "/Exp" + std::to_string(exp) + "/";
-            write_path = folder_for_current_experiment;
-            std::string command = "mkdir -p " + write_path;
-            system(command.c_str());
-            set_write_path(write_path);
-
-            printf("Experiment %d of %d\n", exp + 1, num_experiments);
-            std::cout << "========================" << std::endl;
-            std::cout << "Experiment " << (exp + 1) << " of " << num_experiments << std::endl;
-            std::cout << "Matrix size: " << rows << " x " << cols << std::endl;
-            std::cout << "Block size: " << block_size << " x " << block_size << std::endl;
-
-            size_t* ia = nullptr;
-            size_t* ja = nullptr;
-
-            // Set random_per_row based on sparsity and cols
-            //random_per_row = static_cast<int>(sparsity * cols);
-
-            // Generate mask
-            //sliding_dilation = static_cast<int>(std::pow(2, rand() % (static_cast<int>(std::log2(block_size * no_ofblocks)) )));
-            generate_mask(rows, cols, external_global, internal_global, sliding_window, sliding_dilation, random_per_row, segment_sizes, dilation_sizes, causal, ia, ja);
-            /*
-            mmdata* mm = (struct mmdata *) calloc(1, sizeof(struct mmdata));
-            std::string mm_filename_str = "/scratch/pioneer/users/kxt437/Bigbird_S" + std::to_string(sparsity) + "_N" + std::to_string(no_ofblocks) + "_Causal/Exp" + std::to_string(exp) + "/original_matrix.mtx";
-            
-            char* mm_filename = new char[mm_filename_str.length() + 1];
-            std::strcpy(mm_filename, mm_filename_str.c_str());
-            
-            if (initialize_mm(mm_filename, mm) != 0) {
-                std::cerr << "Error initializing matrix from file: " << mm_filename << std::endl;
-                return;
-            }
-            
-            mm2csr(mm, ia, ja, rows, cols);
-            */
-            std::cout << "========================" << std::endl;
-            run_experiments(RCM, HPRownet, HPSB, HPNBM, TwoConstraint, RCM_HPNBM, HPSB_HPNBM, HPRownet_HPNBM, ia, ja, rows, block_size);
-
-            free(ia);
-            free(ja);
-        }
-    }
-
-    // Restore cout buffer
-    std::cout.rdbuf(original_cout_buffer);
-}
-
-void run_with_mm(char* filename) {
-    mmdata* mm = (struct mmdata *) calloc(1, sizeof(struct mmdata));
-    std::cout << "========================" << std::endl;
-    if (initialize_mm(filename, mm) != 0) {
-        std::cerr << "Error initializing matrix from file: " << filename << std::endl;
+    // Create folder
+    std::string command = "mkdir -p " + folder;
+    int rs = system(command.c_str());
+    if (rs != 0) {
+        std::cerr << "Error creating directory: " << folder << std::endl;
         return;
     }
 
+    size_t rows = cfg.no_blocks * cfg.block_size;
+    size_t cols = cfg.no_blocks * cfg.block_size;
     
+    // Redirect output to file
+    std::ofstream ofs;
+    std::streambuf* original_cout = std::cout.rdbuf();
+    std::string output_file = folder + "/experiment_log.txt";
+    ofs.open(output_file);
+    if (ofs.is_open()) std::cout.rdbuf(ofs.rdbuf());
+    
+    // Logging header
+    std::cout << "============================\n";
+    std::cout << "Running " << pattern_str << " experiments\n";
+    std::cout << "Matrix size: " << rows << " x " << cols << "\n";
+    std::cout << "Block size: " << cfg.block_size << "\n";
+    std::cout << "Causal: " << (cfg.apply_causal ? "yes" : "no") << "\n";
+    if (cfg.pattern == MaskPattern::BigBird || cfg.pattern == MaskPattern::LongFormer)
+        std::cout << "Sparsity: " << cfg.sparsity << "\n";
+    if (cfg.pattern == MaskPattern::LongNet)
+        std::cout << "Segment start: " << cfg.segment_start << "\n";
+    if (cfg.matrix_file) std::cout << "Matrix file: " << cfg.matrix_file.value() << "\n";
+    std::cout << "============================\n";
+    
+    // CSR arrays
     size_t* ia = nullptr;
     size_t* ja = nullptr;
-    size_t rows, cols;
-    mm2csr(mm, ia, ja, rows, cols);
 
-    //printCSR(ia, ja, rows);
+    if (cfg.matrix_file) {
+        // Load matrix from file
+        mmdata* mm = (mmdata*) calloc(1, sizeof(mmdata));
+        char* mm_filename = new char[cfg.matrix_file.value().size() + 1];
+        std::strcpy(mm_filename, cfg.matrix_file.value().c_str());
 
-    size_t block_size = 16; // Example block size
-    run_experiments(true, true, true, true, true, true, true, true, ia, ja, rows, block_size);
+        if (initialize_mm(mm_filename, mm) != 0) {
+            std::cerr << "Error initializing matrix from file: " << mm_filename << "\n";
+            free(mm_filename);
+            return;
+        }
+        free(mm_filename);
 
-    freemm(mm);
+        mm2csr(mm, ia, ja, rows, cols);
+        freemm(mm);
+    } else {
+        // Generate mask based on pattern
+        switch(cfg.pattern) {
+            case MaskPattern::BigBird: {
+                int blocks = static_cast<int>((cfg.sparsity * rows) / 8);
+                int window_size = 2 * blocks; // Example default
+                int num_global_tokens = 3 * blocks; // or user-defined
+                int random_per_row = 3 * blocks;
+                generate_bigbird_mask(rows, cols, window_size, num_global_tokens, random_per_row, cfg.apply_causal, ia, ja);
+                break;
+            }
+            case MaskPattern::LongNet: {
+                int window_size = 0; // Example local window
+                std::vector<size_t> segment_sizes;
+                std::vector<size_t> dilation_sizes;
+                for (int seg = cfg.segment_start; seg < static_cast<int>(std::log2(rows)); ++seg) {
+                    segment_sizes.push_back(static_cast<size_t>(std::pow(2, seg)));
+                    dilation_sizes.push_back(static_cast<size_t>(std::pow(2, seg - cfg.segment_start)));
+                }
+                generate_longnet_mask(rows, cols, window_size, segment_sizes, dilation_sizes, cfg.apply_causal, ia, ja);
+                break;
+            }
+            case MaskPattern::LongFormer: {
+                int blocks = static_cast<int>(cfg.sparsity * rows);
+                int window_size = 2 * blocks; // Local window
+                int dilation = static_cast<int>(std::pow(2, rand() % (static_cast<int>(std::log2(rows)))));    // Example dilation
+                int num_internal_global_tokens = 6 * blocks; // user-defined
+                generate_longformer_mask(rows, cols, window_size, dilation, num_internal_global_tokens, cfg.apply_causal, ia, ja);
+                break;
+            }
+        }
+    }
+
+    // Run BSR experiments
+    bool RCM = false, HPRownet = false, HPSB = false, HPNBM = false, TwoConstraint = false;
+    bool RCM_HPNBM = false, HPSB_HPNBM = false, HPRownet_HPNBM = true;
+
+    run_experiments(RCM, HPRownet, HPSB, HPNBM, TwoConstraint,
+                    RCM_HPNBM, HPSB_HPNBM, HPRownet_HPNBM,
+                    ia, ja, rows, cfg.block_size);
+
     free(ia);
     free(ja);
+
+    // Redirect output back
+    std::cout.rdbuf(original_cout);
+    if (ofs.is_open()) ofs.close();
 }
 
-void reorder_and_save() {
 
+//
+// Help menu
+//
+void print_usage(const char* prog) {
+    std::cout << "Usage: " << prog << " [OPTIONS]\n\n"
+              << "Required:\n"
+              << "  -n <int>         Number of blocks\n"
+              << "  -b <int>         Block size\n"
+              << "  -p <pattern>     Mask pattern: bigbird | longnet | longformer\n\n"
+              << "Optional:\n"
+              << "  -s <double>      Sparsity (required for bigbird, longformer)\n"
+              << "  -g <int>         Segment start exponent (required for longnet)\n"
+              << "  --causal         Apply causal masking (default: off)\n"
+              << "  -o <path>        Save output path (default: none)\n"
+              << "  -h, --help       Show help\n\n"
+              << "Examples:\n"
+              << "  " << prog << " -n 4096 -b 128 -p bigbird -s 0.1 --causal\n"
+              << "  " << prog << " -n 4096 -b 128 -p longnet -g 2 -o out/\n";
+}
+
+//
+// Argument parser
+//
+bool parse_args(int argc, char* argv[], Config &cfg) {
+    if (argc == 1) {
+        print_usage(argv[0]);
+        return false;
+    }
+
+    bool pattern_set = false;
+
+    for (int i = 1; i < argc; i++) {
+        std::string arg = argv[i];
+
+        if (arg == "-h" || arg == "--help") {
+            print_usage(argv[0]);
+            return false;
+        }
+        else if (arg == "-n" && i + 1 < argc) {
+            cfg.no_blocks = std::stoi(argv[++i]);
+        }
+        else if (arg == "-b" && i + 1 < argc) {
+            cfg.block_size = std::stoi(argv[++i]);
+        }
+        else if (arg == "-p" && i + 1 < argc) {
+            std::string p = argv[++i];
+            if      (p == "bigbird")    { cfg.pattern = MaskPattern::BigBird;    pattern_set = true; }
+            else if (p == "longnet")    { cfg.pattern = MaskPattern::LongNet;    pattern_set = true; }
+            else if (p == "longformer") { cfg.pattern = MaskPattern::LongFormer; pattern_set = true; }
+            else {
+                std::cerr << "Unknown pattern: " << p << "\n";
+                return false;
+            }
+        }
+        else if (arg == "-s" && i + 1 < argc) {
+            cfg.sparsity = std::stod(argv[++i]);
+        }
+        else if (arg == "-g" && i + 1 < argc) {
+            cfg.segment_start = std::stoi(argv[++i]);
+        }
+        else if (arg == "--causal") {
+            cfg.apply_causal = true;
+        }
+        else if (arg == "-o" && i + 1 < argc) {
+            cfg.save_path = argv[++i];
+        }
+        else {
+            std::cerr << "Unknown or incomplete argument: " << arg << "\n";
+            return false;
+        }
+    }
+
+    //
+    // Validation
+    //
+    if (cfg.no_blocks <= 0) {
+        std::cerr << "Error: -n <no_blocks> is required and must be > 0\n";
+        return false;
+    }
+
+    if (cfg.block_size <= 0) {
+        std::cerr << "Error: -b <block_size> is required and must be > 0\n";
+        return false;
+    }
+
+    if (!pattern_set) {
+        std::cerr << "Error: -p <pattern> is required\n";
+        return false;
+    }
+
+    // Pattern-specific argument requirements
+    if (cfg.pattern == MaskPattern::BigBird ||
+        cfg.pattern == MaskPattern::LongFormer)
+    {
+        if (cfg.sparsity <= 0) {
+            std::cerr << "Error: -s <sparsity> is required for "
+                      << pattern_to_string(cfg.pattern) << "\n";
+            return false;
+        }
+    }
+
+    if (cfg.pattern == MaskPattern::LongNet) {
+        if (cfg.segment_start < 0) {
+            std::cerr << "Error: -g <segment_start> is required for longnet\n";
+            return false;
+        }
+    }
+
+    return true;
 }
 
 int main(int argc, char* argv[]) {
+    Config cfg;
 
+    if (!parse_args(argc, argv, cfg)) {
+        return 1;
+    }
     // Run experiments
-    int no_ofblocks = argc > 1 ? std::stoi(argv[1]) : 4096;
-    double sparsity = argc > 2 ? std::stod(argv[2]) : 0.1;
-    int seg_start = argc > 3 ? std::stoi(argv[3]) : 2;
-    run_experiments(no_ofblocks, sparsity, seg_start);
-
-    //run_with_mm("../sparse_matrix_groot.mtx");
-
+    run_experiments_mask(cfg);
     return 0; // Indicate successful execution
 }
