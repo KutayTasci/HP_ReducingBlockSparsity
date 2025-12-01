@@ -43,12 +43,14 @@ This repository provides implementations of **sparse matrix reordering and block
 mkdir build
 cd build
 cmake ..
-make
+make```
+
+---
 
 ## 🚀 Usage
 
 ./TestHP [OPTIONS]
-
+--
 ### Required Arguments
 | Flag | Description |
 |------|-------------|
