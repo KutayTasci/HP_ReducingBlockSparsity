@@ -1,61 +1,82 @@
-# HP_ReducingBlockSparsity
+HP_ReducingBlockSparsity
 
-This repository provides implementations of **sparse matrix reordering techniques** based on the **Reverse Cuthill–McKee (RCM) algorithm** and various **hypergraph partitioning approaches**.  
-The goal is to minimize the number of nonzero blocks in block-sparse matrix representations (e.g., BlockCSR), which can improve performance in scientific computing and high-performance linear algebra applications.
+This repository provides implementations of sparse matrix reordering and block sparsity reduction techniques, with a focus on mask generation and hypergraph-based reordering. The goal is to minimize the number of nonzero blocks in block-sparse matrices, improving performance in high-performance computing and scientific computing applications.
 
----
+📦 Features
 
+RCM (Reverse Cuthill–McKee) — Classic bandwidth reduction for sparse matrices.
 
-## Requirements
+HPRownet / HPSB / HPNBM — Hypergraph partitioning methods for block sparsity reduction.
 
-- C++17 (or newer) compiler  
-- CMake  
-- **mt-KaHyPar** — the multi-threaded version of the Karlsruhe Hypergraph Partitioning framework. 
-- Any other libraries your implementation depends on (e.g. Boost, depending on your code)  
+Hybrid Approaches — Combine RCM and hypergraph minimization strategies (e.g., RCM + HPNBM, HPSB + HPNBM, HPRownet + HPNBM).
 
----
+Mask Patterns for Sparse Matrices — Supports structured sparsity patterns:
 
-## ✨ Features
+bigbird — Global + local windowed sparsity
 
-- **RCM (Reverse Cuthill–McKee)**  
-  A classic bandwidth reduction method for sparse matrices.
+longnet — Dilated sliding window with segment start
 
-- **HPSB (Hypergraph Partitioning for Column Reodering Single Border)**  
-  Uses hypergraph partitioning to cluster rows/columns and reduce block fill-in.
+longformer — Dilated sliding window + internal global connections
 
-- **HPNBM (Hypergraph Partitioning for Nonzero Blocks Minimization)**  
-  Targets minimizing the number of nonzero blocks directly.
+🛠️ Dependencies
+General
 
-- **RCM + HPNBM Hybrid**  
-  Applies RCM first, followed by block minimization.
+C++17 or newer
 
-- **HPSB + HPNBM Hybrid**  
-  Combines hypergraph-based sparse block clustering with block minimization.
+CMake
 
----
+Boost
 
-## 🛠️ Code Structure
+Intel TBB (Threading Building Blocks)
 
-The main entry point demonstrates how to use the different reordering strategies:
+hwloc (Hardware locality library)
 
-```cpp
-BlockCSR* bcsr = nullptr;
+HPC-specific (Case Western HPC)
 
-// Reverse Cuthill–McKee
-reorder_RCM(ia, ja, rows, block_size, bcsr, true);
+module load Mt_KaHyPar/hp
 
-// Hypergraph Partitioning for Sparse Blocks
-bcsr = nullptr;
-reorder_HPSB(ia, ja, rows, block_size, bcsr, true);
+module load PaToH/hp
 
-// Hypergraph Partitioning for Nonzero Blocks Minimization
-bcsr = nullptr;
-reorder_HPNBM(ia, ja, rows, block_size, bcsr, true);
+module load CMake/3.26.3-GCCcore-12.3.0
 
-// Hybrid: RCM + HPNBM
-bcsr = nullptr;
-reorder_RCM_HPNBM(ia, ja, rows, block_size, bcsr, true);
+module load Boost/1.82.0-GCC-12.3.0
 
-// Hybrid: HPSB + HPNBM
-bcsr = nullptr;
-reorder_HPSB_HPNBM(ia, ja, rows, block_size, bcsr, true);
+module load tbb/2021.11.0-GCCcore-12.3.0
+
+module load hwloc/2.9.1-GCCcore-12.3.0
+
+⚠️ The general dependencies (Boost, TBB, hwloc) are required on any system.
+
+🏗️ Compilation
+mkdir build
+cd build
+cmake ..
+make
+
+🚀 Usage
+./TestHP [OPTIONS]
+
+Required Arguments
+Flag	Description
+-n <int>	Number of blocks
+-b <int>	Block size
+-p <pattern>	Mask pattern: bigbird
+Optional Arguments
+Flag	Description
+-s <double>	Sparsity (required for bigbird and longformer)
+-g <int>	Segment start exponent (required for longnet)
+--causal	Apply causal masking (default: off)
+-o <path>	Save output path (default: none)
+-h, --help	Show help
+Examples
+# BigBird pattern with causal masking
+./TestHP -n 4096 -b 128 -p bigbird -s 0.1 --causal
+
+# LongNet pattern with segment start
+./TestHP -n 4096 -b 128 -p longnet -g 2 -o out/
+
+📖 Notes
+
+Ensure that hypergraph partitioning libraries (mt-KaHyPar, PaToH) are installed if you plan to use HPNBM-based methods.
+
+Mask patterns (bigbird, longnet, longformer) are intended for structured sparse operations, commonly used in attention mechanisms in machine learning.
