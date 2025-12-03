@@ -59,11 +59,12 @@ void run_experiments(bool RCM, bool HPRownet, bool HPSB, bool HPNBM, bool TwoCon
     bool RCM_HPNBM, bool HPSB_HPNBM, bool HPRownet_HPNBM, size_t* ia, size_t* ja, size_t rows, size_t block_size) {
 
     BSR* bsr = nullptr;
+    bool verbose = true;
 
     std::cout << "========================" << std::endl;
     std::cout << "Experimental results for Baseline" << std::endl;
     std::cout << "========================" << std::endl;
-    reorder_baseline(ia, ja, rows, block_size, bsr, false);
+    reorder_baseline(ia, ja, rows, block_size, bsr, verbose);
     //analyzeBSR(bsr);
 
     //freeBSR(bsr);
@@ -74,7 +75,7 @@ void run_experiments(bool RCM, bool HPRownet, bool HPSB, bool HPNBM, bool TwoCon
         std::cout << "========================" << std::endl;
         std::cout << "Experimental results for RCM" << std::endl;
         std::cout << "========================" << std::endl;
-        reorder_RCM(ia, ja, rows, block_size, bsr_rcm, false);
+        reorder_RCM(ia, ja, rows, block_size, bsr_rcm, verbose);
         //analyzeBSR(bsr_rcm);
 
         //freeBSR(bsr_rcm);
@@ -87,7 +88,7 @@ void run_experiments(bool RCM, bool HPRownet, bool HPSB, bool HPNBM, bool TwoCon
         std::cout << "========================" << std::endl;
         std::cout << "Experimental results for Rownet_HyperGraph_Partitioning" << std::endl;
         std::cout << "========================" << std::endl;
-        reorder_HPRownet(ia, ja, rows, block_size, bsr_hpr, false);
+        reorder_HPRownet(ia, ja, rows, block_size, bsr_hpr, verbose);
         //analyzeBSR(bsr_hpr);
         //freeBSR(bsr_hpr);
     }
@@ -97,7 +98,7 @@ void run_experiments(bool RCM, bool HPRownet, bool HPSB, bool HPNBM, bool TwoCon
         std::cout << "========================" << std::endl;
         std::cout << "Experimental results for Hypergraph_Partitioning_Single_Border" << std::endl;
         std::cout << "========================" << std::endl;
-        reorder_HPSB(ia, ja, rows, block_size, bsr_hpsb, false);
+        reorder_HPSB(ia, ja, rows, block_size, bsr_hpsb, verbose);
         //analyzeBSR(bsr_hpsb);
         //freeBSR(bsr_hpsb);
     }
@@ -107,7 +108,7 @@ void run_experiments(bool RCM, bool HPRownet, bool HPSB, bool HPNBM, bool TwoCon
         std::cout << "========================" << std::endl;
         std::cout << "Experimental results for Hypergraph_Partitioning_Nonzero_Block_Minimization" << std::endl;
         std::cout << "========================" << std::endl;
-        reorder_HPNBM(ia, ja, rows, block_size, bsr_hpn, false);
+        reorder_HPNBM(ia, ja, rows, block_size, bsr_hpn, verbose);
         //analyzeBSR(bsr_hpn);
         //freeBSR(bsr_hpn);
     }
@@ -117,7 +118,7 @@ void run_experiments(bool RCM, bool HPRownet, bool HPSB, bool HPNBM, bool TwoCon
         std::cout << "========================" << std::endl;
         std::cout << "Experimental results for Hypergraph_Partitioning_Two_Constraint" << std::endl;
         std::cout << "========================" << std::endl;
-        reorder_TwoConstraint(ia, ja, rows, block_size, bsr_two, false);
+        reorder_TwoConstraint(ia, ja, rows, block_size, bsr_two, verbose);
         //analyzeBSR(bsr_two);
         //freeBSR(bsr_two);
     }
@@ -127,7 +128,7 @@ void run_experiments(bool RCM, bool HPRownet, bool HPSB, bool HPNBM, bool TwoCon
         std::cout << "========================" << std::endl;
         std::cout << "Experimental results for RCM + Hypergraph_Partitioning_Nonzero_Block_Minimization" << std::endl;
         std::cout << "========================" << std::endl;
-        reorder_RCM_HPNBM(ia, ja, rows, block_size, bsr_rcm_hpn, false);
+        reorder_RCM_HPNBM(ia, ja, rows, block_size, bsr_rcm_hpn, verbose);
         //analyzeBSR(bsr_rcm_hpn);
         //freeBSR(bsr_rcm_hpn);
     }
@@ -137,7 +138,7 @@ void run_experiments(bool RCM, bool HPRownet, bool HPSB, bool HPNBM, bool TwoCon
         std::cout << "========================" << std::endl;
         std::cout << "Experimental results for Hypergraph_Partitioning_Single_Border + Hypergraph_Partitioning_Nonzero_Block_Minimization" << std::endl;
         std::cout << "========================" << std::endl;
-        reorder_HPSB_HPNBM(ia, ja, rows, block_size, bsr_hpsb_hpn, false);
+        reorder_HPSB_HPNBM(ia, ja, rows, block_size, bsr_hpsb_hpn, verbose);
         //analyzeBSR(bsr_hpsb_hpn);
         //freeBSR(bsr_hpsb_hpn);
     }
@@ -147,7 +148,7 @@ void run_experiments(bool RCM, bool HPRownet, bool HPSB, bool HPNBM, bool TwoCon
         std::cout << "========================" << std::endl;
         std::cout << "Experimental results for Rownet_HyperGraph_Partitioning + Hypergraph_Partitioning_Nonzero_Block_Minimization" << std::endl;
         std::cout << "========================" << std::endl;
-        reorder_HPRownet_HPNBM(ia, ja, rows, block_size, bsr_hpr_hpn, false);
+        reorder_HPRownet_HPNBM(ia, ja, rows, block_size, bsr_hpr_hpn, verbose);
         //analyzeBSR(bsr_hpr_hpn);
         //freeBSR(bsr_hpr_hpn);
     }
